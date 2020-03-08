@@ -70,5 +70,5 @@ def validate(d0, d1, d2, d3, d4, t0):
     return True
 
 def simulation(d0, d1, d2, d3, d4, t0):
-    if validate == False: 
+    if validate(d0, d1, d2, d3, d4, t0) == False: 
         return
