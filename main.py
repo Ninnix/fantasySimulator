@@ -2,6 +2,7 @@ import csv
 
 budget = 100
 
+# id dei tuoi piloti e del tuo team
 id_d0 = '1'
 id_d1 = '815'
 id_d2 = '154'
@@ -84,6 +85,7 @@ for driver in lst_drivers:
         driver.mate_id = mate
         driver.team_id = team
         driver.race = results
+        driver.grid = grid
 
 #controlla se il team è valido    
 def validate(d0, d1, d2, d3, d4, t0):
