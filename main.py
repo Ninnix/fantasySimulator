@@ -87,6 +87,45 @@ for driver in lst_drivers:
         driver.race = results
         driver.grid = grid
 
+def race_comp(driver):
+    i = 0
+    race_comp = []
+    for race in lst_races_id:
+        if driver.race[i] < driver.race_mate[i]:
+            race_comp.append(1)
+        else:
+            race_comp.append(0)
+        i = i + 1
+    return race_comp
+
+def quali_comp(driver):
+    i = 0
+    quali_comp = []
+    for quali in lst_races_id:
+        if driver.pole[i] < driver.pole_mate[i]:
+            quali_comp.append(1)
+        else:
+            quali_comp.append(0)
+        i = i + 1
+    return quali_comp
+
+def race_comp1(driver,race_id):
+    race_id = str(race_id)
+    i = lst_races_id.index(race_id)
+    if driver.race[i] < driver.race_mate[i]:
+        return 1
+    else:
+        return 0
+
+def quali_comp1(driver,race_id):
+    race_id = str(race_id)
+    race_id = str(race_id)
+    i = lst_races_id.index(race_id)
+    if driver.race[i] < driver.race_mate[i]:
+        return 1
+    else:
+        return 0
+
 #controlla se il team è valido    
 def validate(d0, d1, d2, d3, d4, t0):
     tot = float(d0.price) + float(d1.price) + float(d2.price) + float(d3.price) + float(d4.price) + float(t0.price)
