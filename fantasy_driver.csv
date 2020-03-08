@@ -1,0 +1,21 @@
+Driver,DriverID,Team,TeamID,Mate,MateID,Price
+Vettel,20,Ferrari,6,Leclerc,844,21.8
+Leclerc,844,Ferrari,6,Vettel,20,24.2
+Hamilton,1,Mercedes,131,Bottas,822,31.3
+Bottas,822,Mercedes,131,Hamiton,1,28.4
+Verstappen,830,Red Bull,9,Gasly,842,26.1
+Gasly,842,Red Bull,9,Verstappen,830,20.3
+Sainz,832,McLaren,1,Norris,846,15.5
+Norris,846,McLaren,1,Sainz,832,11.5
+Ricciardo,817,Renault,4,Hulk,807,14.1
+Hulk,807,Renault,4,Ricciardo,817,12.5
+Kvyat,826,Toro Rosso,5,Albon,848,9.9
+Albon,848,Toro Rosso,5,Kvyat,826,10.4
+Perez,815,Racing Point,211,Stroll,840,9.3
+Stroll,840,Racing Point,211,Perez,815,7.9
+Raikkonen,8,Alfa Romeo,51,Giovinazzi,841,10.3
+Giovinazzi,841,Alfa Romeo,51,Raikkonen,8,7.7
+Russel,847,Williams,3,Latifi,9,5.9
+Kubica,9,Williams,3,Russel,847,5.8
+Grojean,154,Haas,210,Magnussen,825,6
+Magnussen,825,Haas,210,Grojean,154,8.2
