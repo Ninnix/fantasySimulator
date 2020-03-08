@@ -20,6 +20,8 @@ class Driver:
         self.price = price
         self.turbo = turbo
         self.points = points
+        self.race = []
+        self.grid = []
 
 class Team:
     def __init__(self, name, id, price, points):
@@ -65,7 +67,25 @@ with open('fantasy_team.csv') as t:
     for row in reader_f_team:
         if row[0] != 'Team':
             lst_teams.append(Team(row[0], row[1], row[2], 0))
-    
+
+for driver in lst_drivers:
+        team = []
+        mate = []
+        results = []
+        grid = []
+        for race in tab_results:
+            if race[2] == driver.id:
+                team.append(race[3])
+                results.append(race[6])
+                grid.append(race[5])
+                for race1 in tab_results:
+                    if race1[1] == race[1] and race1[3] == race[3] and race1[2] != race[2]:
+                        mate.append(race1[2])
+        driver.mate_id = mate
+        driver.team_id = team
+        driver.race = results
+
+#controlla se il team è valido    
 def validate(d0, d1, d2, d3, d4, t0):
     tot = float(d0.price) + float(d1.price) + float(d2.price) + float(d3.price) + float(d4.price) + float(t0.price)
     if (tot > budget):
@@ -74,12 +94,12 @@ def validate(d0, d1, d2, d3, d4, t0):
     print('team is ok')
     return True
 
-
+#simula una stagione
 def simulation(d0, d1, d2, d3, d4, t0):
     if validate(d0, d1, d2, d3, d4, t0) == False: 
         return
 
-
+#crea la tua squadra my_driver0, my_driver1, my_driver2, my_driver3, my_driver4, my_team
 for d in lst_drivers:
     if d.id == id_d0: 
         my_driver0 = d
