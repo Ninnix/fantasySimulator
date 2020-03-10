@@ -2,7 +2,7 @@ import csv
 
 budget = 100
 
-# id dei tuoi piloti e del tuo team
+# id of your drivers and team
 id_d0 = '1'
 id_d1 = '815'
 id_d2 = '154'
@@ -16,9 +16,9 @@ class Driver:
         self.name = name
         self.id = id
         self.team = team
-        self.team_id = team_id
-        self.mate = mate
-        self.mate_id = mate_id
+        self.team_id = []
+        self.mate = []
+        self.mate_id = []
         self.price = price
         self.turbo = turbo
         self.points = points
@@ -31,6 +31,7 @@ class Driver:
         self.rank_FL = []
         self.race_order = []
         self.mate_race_order = []
+        self.status = []
 
 class Team:
     def __init__(self, name, id, price, points):
@@ -38,7 +39,7 @@ class Team:
         self.id = id
         self.price = price
         self.points = points
-
+        self.drivers = []
 
 with open('csv/races.csv') as f:
     reader_races = csv.reader(f)
@@ -80,40 +81,23 @@ with open('csv/fantasy_team.csv') as t:
 
 # add different properties to each driver based on race results
 for driver in lst_drivers:
-    team = []
-    mate = []
-    results = []
-    grid = []
-    race_mate = []
-    grid_mate = []
-    rank_FL = []
-    race_order = []
-    mate_race_order = []
-    for race in tab_results:
-        if race[2] == driver.id:
-            race_order.append(race[8])
-            team.append(race[3])
-            results.append(race[7])
-            grid.append(race[5])
-            if race[14] == r"\N":
-                rank_FL.append('21')
+    for race1 in tab_results:
+        if race1[2] == driver.id:
+            driver.race_order.append(race1[8])
+            driver.team_id.append(race1[3])
+            driver.race.append(race1[7])
+            driver.grid.append(race1[5])
+            driver.status.append(race1[17])
+            if race1[14] == r"\N":
+                driver.rank_FL.append('21')
             else:
-                rank_FL.append(race[14])
-            for race1 in tab_results:
-                if race1[1] == race[1] and race1[3] == race[3] and race1[2] != race[2]:
-                    mate.append(race1[2])
-                    race_mate.append(race1[7])
-                    grid_mate.append(race1[5])
-                    mate_race_order.append(race1[8])
-    driver.mate_race_order = mate_race_order
-    driver.rank_FL = rank_FL
-    driver.mate_id = mate
-    driver.team_id = team
-    driver.race = results
-    driver.race_order = race_order
-    driver.grid = grid
-    driver.race_mate = race_mate
-    driver.grid_mate = grid_mate
+                driver.rank_FL.append(race1[14])
+            for race2 in tab_results:
+                if race2[1] == race1[1] and race2[3] == race1[3] and race2[2] != race1[2]:
+                    driver.mate_id.append(race2[2])
+                    driver.race_mate.append(race2[7])
+                    driver.grid_mate.append(race2[5])
+                    driver.mate_race_order.append(race2[8])
 
 # add different properties to each driver based on qualifying results
 for driver in lst_drivers:
@@ -128,28 +112,23 @@ for driver in lst_drivers:
     driver.pole = pole
     driver.pole_mate = pole_mate
 
-def race_comp1(driver):
-    i = 0
-    race_comp = []
+# assign each driver to his team
+for team in lst_teams:
+    driver1 = []
+    driver2 = []
     for race in lst_races_id:
-        if driver.race[i] < driver.race_mate[i]:
-            race_comp.append(1)
-        else:
-            race_comp.append(0)
-        i = i + 1
-    return race_comp
+        for i in range(0,20,2):
+            j = lst_races_id.index(race)
+            driver = lst_drivers[i]
+            if driver.team_id[j] == team.id:
+                driver1.append(driver)
+        for i in range(1,20,2):
+            j = lst_races_id.index(race)
+            driver = lst_drivers[i]
+            if driver.team_id[j] == team.id:
+                driver2.append(driver)
+    team.drivers = [driver1, driver2]
 
-
-def quali_comp1(driver):
-    i = 0
-    quali_comp = []
-    for quali in lst_races_id:
-        if driver.pole[i] < driver.pole_mate[i]:
-            quali_comp.append(1)
-        else:
-            quali_comp.append(0)
-        i = i + 1
-    return quali_comp
 
 # compare our driver race results with his team mate for that race ID
 def race_comp(driver, race_id):
@@ -169,7 +148,7 @@ def quali_comp(driver, race_id):
     else:
         return 0
 
-# controlla se un driver è in race streak
+# check if a driver is in race streak
 def race_streak(driver,race_id):
     race_id = str(race_id)
     i = lst_races_id.index(race_id)
@@ -191,7 +170,7 @@ def race_streak(driver,race_id):
     else:
         return 0
 
-# controlla se un driver è in quali streak
+# check if a driver is in quali streak
 def quali_streak(driver,race_id):
     race_id = str(race_id)
     i = lst_races_id.index(race_id)
@@ -206,6 +185,47 @@ def quali_streak(driver,race_id):
             bonus = 0
         j = j + 1
     if bonus%5 == 0 and bonus > 0: # 0%5 è 0!
+        return 1
+    else:
+        return 0
+
+# check if a team is in race streak
+def race_team_streak(team,race_id):
+    race_id = str(race_id)
+    i = lst_races_id.index(race_id)
+    if i < 2:
+        return 0
+    j = 0
+    bonus = 0
+    while j <= i:
+        if team.drivers[0][j].race[j] == str("N") or team.drivers[0][j].race[j] == str("R") or team.drivers[0][j].race[j] == str("D") or team.drivers[1][j].race[j] == str("N") or team.drivers[1][j].race[j] == str("R") or team.drivers[1][j].race[j] == str("D"):
+            bonus = 0
+        else:
+            if float(team.drivers[0][j].race[j]) <= 10 and float(team.drivers[1][j].race[j]) <= 10:
+                bonus = bonus + 1
+            else:
+                bonus = 0
+        j = j + 1
+    if bonus%3 == 0 and bonus > 0: # 0%3 è 0 !
+        return 1
+    else:
+        return 0
+
+# check if a team is in quali streak
+def quali_team_streak(team,race_id):
+    race_id = str(race_id)
+    i = lst_races_id.index(race_id)
+    if i < 2:
+        return 0
+    j = 0
+    bonus = 0
+    while j <= i:
+        if float(team.drivers[0][j].pole[j]) <= 10 and float(team.drivers[1][j].pole[j]) <= 10:
+            bonus = bonus + 1
+        else:
+            bonus = 0
+        j = j + 1
+    if bonus%3 == 0 and bonus > 0: # 0%3 è 0!
         return 1
     else:
         return 0
@@ -246,15 +266,25 @@ def quali_point(driver,race_id):
         return score + bonusQ1 + bonus_mate
 
 # number of position gained gives 2 pts per position up to 10 pts
+# this function returns points!
 def gain_position(driver,race_id):
     i = lst_races_id.index(race_id)
     gain = int(driver.grid[i]) - int(driver.race_order[i])
     if gain < 0:
-        return 0
+        if int(driver.grid[i]) < 11:
+            if gain < -6:
+                return -10
+            else:
+                return 2 * gain # gain is negativo
+        else:
+            if gain < -6:
+                return -5
+            else:
+                return 2 * gain
     if gain > 5:
-        return 5
+        return 2*5
     else:
-        return gain
+        return 2*gain
 
 # check for the fastest lap
 def fastest_lap(driver,race_id):
@@ -264,7 +294,17 @@ def fastest_lap(driver,race_id):
     else:
         return 0
 
-# controlla se il team è valido ( cioè non supero il budget)
+# check for race finisher
+def finisher(driver,race_id):
+    i = lst_races_id.index(race_id)
+    if driver.status[i] == '1':
+        return 1
+    else:
+        return 0
+
+
+
+# check if your team is valid, that means you didn't go under yout budget
 def validate(lst_team):
     tot = 0
     for d in lst_team:
@@ -276,12 +316,12 @@ def validate(lst_team):
     return True
 
 
-# simula una stagione
+# it simulates a season
 def simulation(lst_team):
     if validate(lst_team) == False:
         return
 
-# crea la tua squadra in una lista lst_my_team
+# it moves your team in a list called lst_my_team
 lst_my_team = []
 for d in lst_drivers:
     if d.id == id_d0:
@@ -304,8 +344,7 @@ validate(lst_my_team)
 #    print(d.name)
 
 #print(lst_drivers[2].pole)
-print(lst_drivers[0].race_order)
-print(lst_drivers[0].grid)
+print(lst_teams[1].drivers[0][0].pole)
+print(lst_teams[1].drivers[1][0].pole)
 for race in lst_races_id:
-#    for d in lst_drivers:
-    print(fastest_lap(lst_drivers[1],race))
+    print(quali_team_streak(lst_teams[1],race))
