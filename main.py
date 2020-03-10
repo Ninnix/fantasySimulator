@@ -40,7 +40,7 @@ class Team:
         self.points = points
 
 
-with open('races.csv') as f:
+with open('csv/races.csv') as f:
     reader_races = csv.reader(f)
     lst_races_id = []
     for row in reader_races:
@@ -48,7 +48,7 @@ with open('races.csv') as f:
             lst_races_id.append(row[0])
     # print(lst_races_id)
 
-with open('results.csv') as g:
+with open('csv/results.csv') as g:
     reader_results = csv.reader(g)
     tab_results = []
     for row in reader_results:
@@ -56,7 +56,7 @@ with open('results.csv') as g:
             if row[1] == id:
                 tab_results.append(row)
 
-with open('qualifying.csv') as h:
+with open('csv/qualifying.csv') as h:
     reader_qualifying = csv.reader(h)
     tab_qualifying = []
     for row in reader_qualifying:
@@ -64,14 +64,14 @@ with open('qualifying.csv') as h:
             if row[1] == id:
                 tab_qualifying.append(row)
 
-with open('fantasy_driver.csv') as d:
+with open('csv/fantasy_driver.csv') as d:
     reader_f_driver = csv.reader(d)
     lst_drivers = []
     for row in reader_f_driver:
         if row[0] != 'Driver':
             lst_drivers.append(Driver(row[0], row[1], row[2], row[3], row[4], row[5], row[6], False, 0))
 
-with open('fantasy_team.csv') as t:
+with open('csv/fantasy_team.csv') as t:
     reader_f_team = csv.reader(t)
     lst_teams = []
     for row in reader_f_team:
