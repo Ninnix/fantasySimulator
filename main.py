@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 budget = 100
 
 # id of your drivers and team
-id_d0 = '1'
+id_d0 = '20'
 id_d1 = '815'
 id_d2 = '154'
 id_d3 = '825'
