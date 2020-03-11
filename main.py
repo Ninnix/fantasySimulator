@@ -433,8 +433,8 @@ plt.bar(r2, bars2, color='#badf55', width=barWidth, edgecolor='white', label=lst
 plt.bar(r3, bars3, color='#35b1c9', width=barWidth, edgecolor='white', label=lst_my_drivers[2].name)
 plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst_my_drivers[3].name)
 plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
-plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label='Team Driver 1')
-plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label='Team Driver 2')
+plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label=my_team.name + ' driver1')
+plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label=my_team.name + ' driver2')
 plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label='Streak')
 plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label='Tot')
 
