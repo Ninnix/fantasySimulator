@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 budget = 100
 
 # id of your drivers and team
-id_d0 = '20'
+id_d0 = '1'
 id_d1 = '815'
 id_d2 = '9'
 id_d3 = '825'
@@ -33,6 +33,7 @@ class Driver:
         self.race_order = []
         self.mate_race_order = []
         self.status = []
+        self.score_for_races = []
 
 class Team:
     def __init__(self, name, id, price, points):
@@ -105,11 +106,12 @@ for driver in lst_drivers:
     pole = []
     pole_mate = []
     for quali in tab_qualifying:
-        if driver.id == quali[2]:
+        if quali[2] == driver.id:
             pole.append(quali[5])
             for quali1 in tab_qualifying:
-                if quali1[1] == quali[1] and quali1[3] == quali[3] and quali1[2] != quali[2]:
+                if quali[1] == quali1[1] and quali[3] == quali1[3] and quali[2] != quali1[2]:
                     pole_mate.append(quali1[5])
+                    print(quali1[5] + ' ' + driver.name + ' '+ quali1[1])
     driver.pole = pole
     driver.pole_mate = pole_mate
 
@@ -328,9 +330,8 @@ def validate(lst_team,t):
 
 # it simulates a season
 def simulation(lst_my_drivers,my_team):
-    global race_point
-    if validate(lst_my_drivers,my_team) == False:
-        return
+    #if validate(lst_my_drivers,my_team) == False:
+    #    return
     score = []
     for race in lst_races_id:
         i = lst_races_id.index(race)
@@ -345,7 +346,7 @@ def simulation(lst_my_drivers,my_team):
             quali_points = quali_point(d,race)
 
             race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
-
+            d.score_for_races.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
             bonus_race_team_streak = race_team_streak(my_team,race)
             bonus_quali_team_streak = quali_team_streak(my_team,race)
             race_score.append(bonus_race_team_streak + bonus_quali_team_streak)
@@ -367,8 +368,6 @@ def final_score(score):
         for x in race:
             tot = tot + x
     return tot
-
-
 
 # it moves your team in a list called lst_my_team
 lst_my_drivers = []
@@ -396,24 +395,30 @@ validate(lst_my_drivers, my_team)
 print(lst_teams[1].drivers[0][0].pole)
 print(lst_teams[1].drivers[1][0].pole)
 
-results = simulation(lst_my_drivers,my_team)
+for d in lst_drivers:
+    print(str(len(d.pole_mate)) + d.name)
+
+results = simulation(lst_drivers,my_team)
 print(str(results))
 if validate(lst_my_drivers, my_team):
     print(str(final_score(results)))
 
+for d in lst_drivers:
+    print(d.score_for_races)
+
 # set width of bar
 barWidth = 0.1
- 
+
 # set height of bar
-bars1 = [12, 30, 1, 8, 22] #list points driver1
-bars2 = [28, 6, 16, 5, 10] #list points driver2
-bars3 = [29, 3, 24, 25, 17] #list points driver3
-bars4 = [28, 6, 16, 5, 10] #list points driver4
-bars5 = [29, 3, 24, 25, 17] #list points driver5
-bars6 = [28, 6, 16, 5, 10] #list points team driver1
-bars7 = [29, 3, 24, 25, 17] #list points team driver2
-bars8 = [28, 6, 16, 5, 10] #list streak point
-bars9 = [29, 3, 24, 25, 17] #list tot points
+bars1 = lst_my_drivers[0].score_for_races #list points driver1
+bars2 = lst_my_drivers[1].score_for_races #list points driver2
+bars3 = lst_my_drivers[2].score_for_races #list points driver3
+bars4 = lst_my_drivers[3].score_for_races #list points driver4
+bars5 = lst_my_drivers[4].score_for_races #list points driver5
+bars6 = my_team.drivers[0][0].score_for_races
+bars7 = my_team.drivers[0][1].score_for_races
+bars8 = range(0,21) #list streak point
+bars9 = range(0,21)#list tot points
  
 # Set position of bar on X axis
 r1 = np.arange(len(bars1))
