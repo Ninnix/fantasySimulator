@@ -234,12 +234,7 @@ def quali_team_streak(team,race_id):
 def race_point(driver,race_id):
     points = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
     i = lst_races_id.index(race_id)
-    race_pos = driver.race[i]
-    bonus_mate = 3 * race_comp(driver, race_id)
-    if race_pos == 'R' or race_pos == 'N':
-        return -10
-    if race_pos == 'D':
-        return -20
+    race_pos = driver.race_order[i]
     if float(race_pos) < 11:
         score = points[int(race_pos) - 1]
         return score
@@ -251,21 +246,35 @@ def quali_point(driver,race_id):
     points = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
     i = lst_races_id.index(race_id)
     quali_pos = driver.pole[i]
-    bonus_mate = 2*quali_comp(driver,race_id)
     if float(quali_pos) < 11:
         score = points[int(quali_pos)-1]
         bonusQ3 = 3
-        return score + bonusQ3 + bonus_mate
+        return score + bonusQ3
     if  float(quali_pos) > 10 and float(quali_pos) < 16:
         score = 0
         bonusQ2 = 2
-        return score + bonusQ2 + bonus_mate
+        return score + bonusQ2
     else:
         score = 0
         bonusQ1 = 1
-        return score + bonusQ1 + bonus_mate
+        return score + bonusQ1
 
-# number of position gained gives 2 pts per position up to 10 pts
+# points only for drivers, return points
+def driver_only(driver,race_id):
+    i = lst_races_id.index(race_id)
+    race_pos = driver.race[i]
+    bonus_race_mate = 3 * race_comp(driver,race_id)
+    bonus_quali_mate = 2 * quali_comp(driver,race_id)
+    bonus_FL = 5 * fastest_lap(driver,race_id)
+    if race_pos == 'R' or race_pos == 'N':
+        return -10 + bonus_race_mate + bonus_quali_mate + bonus_FL
+    if race_pos == 'D':
+        return -20 + bonus_race_mate + bonus_quali_mate + bonus_FL
+    else:
+        return 0 + bonus_race_mate + bonus_quali_mate + bonus_FL
+
+
+        # number of position gained gives 2 pts per position up to 10 pts
 # this function returns points!
 def gain_position(driver,race_id):
     i = lst_races_id.index(race_id)
@@ -275,7 +284,7 @@ def gain_position(driver,race_id):
             if gain < -6:
                 return -10
             else:
-                return 2 * gain # gain is negativo
+                return 2 * gain # gain is negative
         else:
             if gain < -6:
                 return -5
@@ -305,8 +314,8 @@ def finisher(driver,race_id):
 
 
 # check if your team is valid, that means you didn't go under yout budget
-def validate(lst_team):
-    tot = 0
+def validate(lst_team,t):
+    tot = float(t.price)
     for d in lst_team:
         tot = tot + float(d.price)
     if (tot > budget):
@@ -317,28 +326,67 @@ def validate(lst_team):
 
 
 # it simulates a season
-def simulation(lst_team):
-    if validate(lst_team) == False:
+def simulation(lst_my_drivers,my_team):
+    global race_point
+    if validate(lst_my_drivers,my_team) == False:
         return
+    score = []
+    for race in lst_races_id:
+        i = lst_races_id.index(race)
+        race_score = []
+        for d in lst_my_drivers:
+            bonus_race_streak = 10 * race_streak(d,race)
+            bonus_quali_strak = 5 * quali_streak(d,race)
+            bonus_finischer = 1 * finisher(d,race)
+            bonus_driver_only = driver_only(d,race)
+            bonus_position = gain_position(d,race)
+            race_points = race_point(d,race)
+            quali_points = quali_point(d,race)
+
+            race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
+
+            bonus_race_team_streak = race_team_streak(my_team,race)
+            bonus_quali_team_streak = quali_team_streak(my_team,race)
+            race_score.append(bonus_race_team_streak + bonus_quali_team_streak)
+        for t in my_team.drivers:
+            bonus_race_streak = 10 * race_streak(t[i],race)
+            bonus_quali_strak = 5 * quali_streak(t[i],race)
+            bonus_finischer = 1 * finisher(t[i],race)
+            bonus_position = gain_position(t[i],race)
+            race_points = race_point(t[i],race)
+            quali_points = quali_point(t[i],race)
+
+            race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_position + race_points + quali_points)
+        score.append(race_score)
+    return score
+
+def final_score(score):
+    tot = 0
+    for race in score:
+        for x in race:
+            tot = tot + x
+    return tot
+
+
 
 # it moves your team in a list called lst_my_team
-lst_my_team = []
+lst_my_drivers = []
 for d in lst_drivers:
     if d.id == id_d0:
-        lst_my_team.append(d)
+        lst_my_drivers.append(d)
     if d.id == id_d1:
-        lst_my_team.append(d)
+        lst_my_drivers.append(d)
     if d.id == id_d2:
-        lst_my_team.append(d)
+        lst_my_drivers.append(d)
     if d.id == id_d3:
-        lst_my_team.append(d)
+        lst_my_drivers.append(d)
     if d.id == id_d4:
-        lst_my_team.append(d)
+        lst_my_drivers.append(d)
 for t in lst_teams:
     if t.id == id_t0:
-        lst_my_team.append(t)
+        my_team = t
 
-validate(lst_my_team)
+validate(lst_my_drivers, my_team)
 
 #for d in lst_my_team[:-1]:
 #    print(d.name)
@@ -346,5 +394,7 @@ validate(lst_my_team)
 #print(lst_drivers[2].pole)
 print(lst_teams[1].drivers[0][0].pole)
 print(lst_teams[1].drivers[1][0].pole)
-for race in lst_races_id:
-    print(quali_team_streak(lst_teams[1],race))
+
+results = simulation(lst_my_drivers,my_team)
+print(str(results))
+print(str(final_score(results)))
