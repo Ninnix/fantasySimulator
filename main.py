@@ -7,10 +7,10 @@ budget = 100
 # id of your drivers and team
 id_d0 = '20'
 id_d1 = '815'
-id_d2 = '154'
+id_d2 = '9'
 id_d3 = '825'
 id_d4 = '847'
-id_t0 = '6'
+id_t0 = '5'
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
