@@ -1,10 +1,12 @@
 import csv
-
+import numpy as np
+import matplotlib.pyplot as plt
+ 
 budget = 100
 
 # id of your drivers and team
 id_d0 = '1'
-id_d1 = '844'
+id_d1 = '815'
 id_d2 = '154'
 id_d3 = '825'
 id_d4 = '847'
@@ -47,7 +49,7 @@ with open('csv/races.csv') as f:
     for row in reader_races:
         if '2019' == row[1]:
             lst_races_id.append(row[0])
-    # print(lst_races_id)
+    #print(lst_races_id)
 
 with open('csv/results.csv') as g:
     reader_results = csv.reader(g)
@@ -399,3 +401,49 @@ results = simulation(lst_my_drivers,my_team)
 print(str(results))
 if validate(lst_my_drivers, my_team):
     print(str(final_score(results)))
+
+# set width of bar
+barWidth = 0.1
+ 
+# set height of bar
+bars1 = [12, 30, 1, 8, 22] #list points driver1
+bars2 = [28, 6, 16, 5, 10] #list points driver2
+bars3 = [29, 3, 24, 25, 17] #list points driver3
+bars4 = [28, 6, 16, 5, 10] #list points driver4
+bars5 = [29, 3, 24, 25, 17] #list points driver5
+bars6 = [28, 6, 16, 5, 10] #list points team driver1
+bars7 = [29, 3, 24, 25, 17] #list points team driver2
+bars8 = [28, 6, 16, 5, 10] #list streak point
+bars9 = [29, 3, 24, 25, 17] #list tot points
+ 
+# Set position of bar on X axis
+r1 = np.arange(len(bars1))
+r2 = [x + barWidth for x in r1] 
+r3 = [x + barWidth for x in r2]
+r4 = [x + barWidth for x in r3]
+r5 = [x + barWidth for x in r4]
+r6 = [x + barWidth for x in r5]
+r7 = [x + barWidth for x in r6]
+r8 = [x + barWidth for x in r7]
+r9 = [x + barWidth for x in r8]
+ 
+# Make the plot
+plt.bar(r1, bars1, color='#ebc83d', width=barWidth, edgecolor='white', label=lst_my_drivers[0].name)
+plt.bar(r2, bars2, color='#badf55', width=barWidth, edgecolor='white', label=lst_my_drivers[1].name)
+plt.bar(r3, bars3, color='#35b1c9', width=barWidth, edgecolor='white', label=lst_my_drivers[2].name)
+plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst_my_drivers[3].name)
+plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
+plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label='Team Driver 1')
+plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label='Team Driver 2')
+plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label='Streak')
+plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label='Tot')
+
+ 
+# Add xticks on the middle of the group bars
+plt.xlabel('Races', fontweight='bold')
+plt.ylabel('Points', fontweight='bold')
+plt.xticks([r + barWidth for r in range(len(lst_races_id)+1)], lst_races_id)
+ 
+# Create legend & Show graphic
+plt.legend()
+plt.show()
