@@ -4,7 +4,7 @@ budget = 100
 
 # id of your drivers and team
 id_d0 = '1'
-id_d1 = '815'
+id_d1 = '844'
 id_d2 = '154'
 id_d3 = '825'
 id_d4 = '847'
@@ -319,9 +319,9 @@ def validate(lst_team,t):
     for d in lst_team:
         tot = tot + float(d.price)
     if (tot > budget):
-        print('invalid team')
+        print('invalid team, budget: ' + str(budget - tot))
         return False
-    print('team is ok')
+    print('team is ok, budget: '+ str(budget - tot))
     return True
 
 
@@ -397,4 +397,5 @@ print(lst_teams[1].drivers[1][0].pole)
 
 results = simulation(lst_my_drivers,my_team)
 print(str(results))
-print(str(final_score(results)))
+if validate(lst_my_drivers, my_team):
+    print(str(final_score(results)))
