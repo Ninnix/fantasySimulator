@@ -12,7 +12,6 @@ id_d3 = '825'
 id_d4 = '847'
 id_t0 = '131'
 
-
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
         self.name = name
