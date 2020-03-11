@@ -10,7 +10,7 @@ id_d1 = '815'
 id_d2 = '154'
 id_d3 = '825'
 id_d4 = '847'
-id_t0 = '131'
+id_t0 = '6'
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
