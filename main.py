@@ -10,7 +10,7 @@ id_d1 = '815'
 id_d2 = '9'
 id_d3 = '825'
 id_d4 = '847'
-id_t0 = '5'
+id_t0 = '131'
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
@@ -111,7 +111,6 @@ for driver in lst_drivers:
             for quali1 in tab_qualifying:
                 if quali[1] == quali1[1] and quali[3] == quali1[3] and quali[2] != quali1[2]:
                     pole_mate.append(quali1[5])
-                    print(quali1[5] + ' ' + driver.name + ' '+ quali1[1])
     driver.pole = pole
     driver.pole_mate = pole_mate
 
@@ -388,20 +387,22 @@ for t in lst_teams:
 
 validate(lst_my_drivers, my_team)
 
+
+
 #for d in lst_my_team[:-1]:
 #    print(d.name)
 
 #print(lst_drivers[2].pole)
-print(lst_teams[1].drivers[0][0].pole)
-print(lst_teams[1].drivers[1][0].pole)
+#print(lst_teams[1].drivers[0][0].pole)
+#print(lst_teams[1].drivers[1][0].pole)
 
-for d in lst_drivers:
-    print(str(len(d.pole_mate)) + d.name)
+#for d in lst_drivers:
+#    print(str(len(d.pole_mate)) + d.name)
 
 results = simulation(lst_drivers,my_team)
-print(str(results))
+print(results)
 if validate(lst_my_drivers, my_team):
-    print(str(final_score(results)))
+    print(final_score(results))
 
 for d in lst_drivers:
     print(d.score_for_races)
@@ -416,7 +417,7 @@ bars3 = lst_my_drivers[2].score_for_races #list points driver3
 bars4 = lst_my_drivers[3].score_for_races #list points driver4
 bars5 = lst_my_drivers[4].score_for_races #list points driver5
 bars6 = my_team.drivers[0][0].score_for_races
-bars7 = my_team.drivers[0][1].score_for_races
+bars7 = my_team.drivers[1][0].score_for_races
 bars8 = range(0,21) #list streak point
 bars9 = range(0,21)#list tot points
  
