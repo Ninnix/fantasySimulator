@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 budget = 100
 
 # id of your drivers and team
-id_d0 = '1'
-id_d1 = '815'
-id_d2 = '9'
-id_d3 = '825'
+id_d0 = '9'
+id_d1 = '830'
+id_d2 = '848'
+id_d3 = '822'
 id_d4 = '847'
-id_t0 = '131'
+id_t0 = '5'
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
@@ -42,6 +42,8 @@ class Team:
         self.price = price
         self.points = points
         self.drivers = []
+        self.score_by_drivers = []
+        self.score_for_races = []
 
 with open('csv/races.csv') as f:
     reader_races = csv.reader(f)
@@ -328,14 +330,12 @@ def validate(lst_team,t):
 
 
 # it simulates a season
-def simulation(lst_my_drivers,my_team):
-    #if validate(lst_my_drivers,my_team) == False:
-    #    return
+def simulation(lst_drivers,lst_team):
     score = []
     for race in lst_races_id:
         i = lst_races_id.index(race)
         race_score = []
-        for d in lst_my_drivers:
+        for d in lst_drivers:
             bonus_race_streak = 10 * race_streak(d,race)
             bonus_quali_strak = 5 * quali_streak(d,race)
             bonus_finischer = 1 * finisher(d,race)
@@ -346,18 +346,27 @@ def simulation(lst_my_drivers,my_team):
 
             race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
             d.score_for_races.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
-            bonus_race_team_streak = race_team_streak(my_team,race)
-            bonus_quali_team_streak = quali_team_streak(my_team,race)
-            race_score.append(bonus_race_team_streak + bonus_quali_team_streak)
-        for t in my_team.drivers:
-            bonus_race_streak = 10 * race_streak(t[i],race)
-            bonus_quali_strak = 5 * quali_streak(t[i],race)
-            bonus_finischer = 1 * finisher(t[i],race)
-            bonus_position = gain_position(t[i],race)
-            race_points = race_point(t[i],race)
-            quali_points = quali_point(t[i],race)
 
-            race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_position + race_points + quali_points)
+
+        for team in lst_team:
+            team_score = []
+            for t in team.drivers:
+                bonus_race_streak = 10 * race_streak(t[i], race)
+                bonus_quali_strak = 5 * quali_streak(t[i], race)
+                bonus_finischer = 1 * finisher(t[i], race)
+                bonus_position = gain_position(t[i], race)
+                race_points = race_point(t[i], race)
+                quali_points = quali_point(t[i], race)
+
+                team_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_position + race_points + quali_points)
+
+            bonus_race_team_streak = race_team_streak(team, race)
+            bonus_quali_team_streak = quali_team_streak(team, race)
+            team_score.append(bonus_race_team_streak + bonus_quali_team_streak)
+
+            team.score_by_drivers.append(team_score)
+            team.score_for_races.append(sum(team_score))
+
         score.append(race_score)
     return score
 
@@ -399,13 +408,18 @@ validate(lst_my_drivers, my_team)
 #for d in lst_drivers:
 #    print(str(len(d.pole_mate)) + d.name)
 
-results = simulation(lst_drivers,my_team)
+results = simulation(lst_drivers,lst_teams)
 print(results)
 if validate(lst_my_drivers, my_team):
     print(final_score(results))
 
-for d in lst_drivers:
-    print(d.score_for_races)
+#or d in lst_drivers:
+#    print(d.score_for_races)
+
+for t in lst_teams:
+    print(t.score_by_drivers[0])
+
+
 
 # set width of bar
 barWidth = 0.1
