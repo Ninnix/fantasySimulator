@@ -86,9 +86,11 @@ class Team:
 with open('csv/races.csv') as f:
     reader_races = csv.reader(f)
     lst_races_id = []
+    tab_races = []
     for row in reader_races:
         if '2019' == row[1]:
             lst_races_id.append(row[0])
+            tab_races.append(row)
     #print(lst_races_id)
 
 with open('csv/results.csv') as g:
@@ -314,7 +316,6 @@ def driver_only(driver,race_id):
     else:
         return 0 + bonus_race_mate + bonus_quali_mate + bonus_FL
 
-
         # number of position gained gives 2 pts per position up to 10 pts
 # this function returns points!
 def gain_position(driver,race_id):
@@ -352,8 +353,6 @@ def finisher(driver,race_id):
     else:
         return 0
 
-
-
 # check if your team is valid, that means you didn't go under yout budget
 def validate(lst_team,t):
     tot = float(t.price)
@@ -364,7 +363,6 @@ def validate(lst_team,t):
         return False
     print('team is ok, budget: '+ str(budget - tot))
     return True
-
 
 # it simulates a season
 def simulation(lst_drivers,lst_team):
@@ -383,7 +381,6 @@ def simulation(lst_drivers,lst_team):
 
             race_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
             d.score_for_races.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_driver_only + bonus_position + race_points + quali_points)
-
 
         for team in lst_team:
             team_score = []
@@ -417,6 +414,15 @@ def final_score(my_drivers,my_team):
         return tot
     else:
         return 'Final score of invalid team is 0'
+
+# create dictionary for races name
+id = []
+name_race = []
+for row in tab_races:
+    id.append(row[0])
+    name_race.append(row[4])
+dic_races = dict(zip(id,name_race))
+
 # it moves your team in a list called lst_my_team
 lst_my_drivers = []
 for d in lst_drivers:
@@ -436,7 +442,7 @@ for t in lst_teams:
 
 simulation(lst_drivers,lst_teams)
 print(final_score(lst_my_drivers,my_team))
-
+print(dic_races['1010'])
 # set width of bar
 barWidth = 0.1
 
@@ -470,14 +476,18 @@ plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst
 plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
 plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label=my_team.name + ' driver1')
 plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label=my_team.name + ' driver2')
-plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label='Streak')
-plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label='Tot')
+plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label='Team streak')
+plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label='Team tot')
 
- 
+# create label list for the races
+lst_label_race = []
+for id in lst_races_id:
+    lst_label_race.append(dic_races[id])
+
 # Add xticks on the middle of the group bars
 plt.xlabel('Races', fontweight='bold')
 plt.ylabel('Points', fontweight='bold')
-plt.xticks([r + barWidth for r in range(len(lst_races_id)+1)], lst_races_id)
+plt.xticks([r + barWidth for r in range(len(lst_races_id)+1)], lst_label_race, rotation=45)
  
 # Create legend & Show graphic
 plt.legend()
