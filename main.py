@@ -10,7 +10,7 @@ id_d1 = 'Giovinazzi'
 id_d2 = 'Perez'
 id_d3 = 'Russel'
 id_d4 = 'Grojean'
-id_t0 = 'Mercedes'
+id_t0 = 'Red Bull'
 
 # dictionary for the drivers, used to create lst_my_team
 dic_drivers = {
@@ -394,8 +394,8 @@ def simulation(lst_drivers,lst_team):
 
                 team_score.append(bonus_race_streak + bonus_quali_strak + bonus_finischer + bonus_position + race_points + quali_points)
 
-            bonus_race_team_streak = race_team_streak(team, race)
-            bonus_quali_team_streak = quali_team_streak(team, race)
+            bonus_race_team_streak = 10 * race_team_streak(team, race)
+            bonus_quali_team_streak = 5 * quali_team_streak(team, race)
             team_score.append(bonus_race_team_streak + bonus_quali_team_streak)
 
             team.score_by_drivers[0].append(team_score[0])
@@ -442,7 +442,7 @@ for t in lst_teams:
 
 simulation(lst_drivers,lst_teams)
 print(final_score(lst_my_drivers,my_team))
-print(dic_races['1010'])
+print(sum(my_team.score_for_races))
 # set width of bar
 barWidth = 0.1
 
