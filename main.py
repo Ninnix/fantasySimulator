@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 budget = 100
 
 # id of your drivers and team
-id_d0 = '9'
-id_d1 = '830'
-id_d2 = '848'
-id_d3 = '822'
-id_d4 = '847'
-id_t0 = '5'
+id_d0 = 'Hamilton'
+id_d1 = 'Stroll'
+id_d2 = 'Perez'
+id_d3 = 'Russel'
+id_d4 = 'Kubica'
+id_t0 = 'Ferrari'
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
@@ -133,6 +133,43 @@ for team in lst_teams:
                 driver2.append(driver)
     team.drivers = [driver1, driver2]
 
+# dictionary for the drivers, used to create lst_my_team
+dic_drivers = {
+    'Vettel': '20',
+    'Leclerc': '844',
+    'Hamilton': '1',
+    'Bottas': '822',
+    'Verstappen': '830',
+    'Gasly': '842',
+    'Sainz': '832',
+    'Norris': '846',
+    'Ricciardo': '817',
+    'Hulk': '807',
+    'Kvyat': '826',
+    'Albon': '848',
+    'Perez': '815',
+    'Stroll': '840',
+    'Raikkonen': '8',
+    'Giovinazzi': '841',
+    'Russel': '847',
+    'Kubica': '9',
+    'Grojean': '154',
+    'Magnussen': '825',
+}
+
+# dictionary for the team, used to create my_team
+dic_teams = {
+    'Ferrari': '6',
+    'Mercedes': '131',
+    'Red Bull': '9',
+    'Toro Rosso': '5',
+    'Racing Point': '211',
+    'Alfa Romeo': '51',
+    'McLaren': '1',
+    'Williams': '3',
+    'Renault': '4',
+    'Haas': '210',
+}
 
 # compare our driver race results with his team mate for that race ID
 def race_comp(driver, race_id):
@@ -382,18 +419,18 @@ def final_score(score):
 # it moves your team in a list called lst_my_team
 lst_my_drivers = []
 for d in lst_drivers:
-    if d.id == id_d0:
+    if d.id == dic_drivers[id_d0]:
         lst_my_drivers.append(d)
-    if d.id == id_d1:
+    if d.id == dic_drivers[id_d1]:
         lst_my_drivers.append(d)
-    if d.id == id_d2:
+    if d.id == dic_drivers[id_d2]:
         lst_my_drivers.append(d)
-    if d.id == id_d3:
+    if d.id == dic_drivers[id_d3]:
         lst_my_drivers.append(d)
-    if d.id == id_d4:
+    if d.id == dic_drivers[id_d4]:
         lst_my_drivers.append(d)
 for t in lst_teams:
-    if t.id == id_t0:
+    if t.id == dic_teams[id_t0]:
         my_team = t
 
 validate(lst_my_drivers, my_team)
