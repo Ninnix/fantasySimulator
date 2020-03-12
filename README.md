@@ -6,4 +6,4 @@
  data source: http://ergast.com/mrd/db/
 
  example:
-![Image description]https://ibb.co/GRXG666
+![chart](https://ibb.co/GRXG666)
