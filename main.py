@@ -42,7 +42,7 @@ class Team:
         self.price = price
         self.points = points
         self.drivers = []
-        self.score_by_drivers = []
+        self.score_by_drivers = [[], [], []]
         self.score_for_races = []
 
 with open('csv/races.csv') as f:
@@ -364,7 +364,9 @@ def simulation(lst_drivers,lst_team):
             bonus_quali_team_streak = quali_team_streak(team, race)
             team_score.append(bonus_race_team_streak + bonus_quali_team_streak)
 
-            team.score_by_drivers.append(team_score)
+            team.score_by_drivers[0].append(team_score[0])
+            team.score_by_drivers[1].append(team_score[1])
+            team.score_by_drivers[2].append(team_score[2])
             team.score_for_races.append(sum(team_score))
 
         score.append(race_score)
@@ -418,8 +420,9 @@ if validate(lst_my_drivers, my_team):
 
 for t in lst_teams:
     print(t.score_by_drivers[0])
-
-
+    print(t.score_by_drivers[1])
+    print(t.score_by_drivers[2])
+    print(t.score_for_races)
 
 # set width of bar
 barWidth = 0.1
@@ -430,10 +433,10 @@ bars2 = lst_my_drivers[1].score_for_races #list points driver2
 bars3 = lst_my_drivers[2].score_for_races #list points driver3
 bars4 = lst_my_drivers[3].score_for_races #list points driver4
 bars5 = lst_my_drivers[4].score_for_races #list points driver5
-bars6 = my_team.drivers[0][0].score_for_races
-bars7 = my_team.drivers[1][0].score_for_races
-bars8 = range(0,21) #list streak point
-bars9 = range(0,21)#list tot points
+bars6 = my_team.score_by_drivers[0] #list points driver 1 my team
+bars7 = my_team.score_by_drivers[1] #list points driver 2 my team
+bars8 = my_team.score_by_drivers[2] #list streak point
+bars9 = my_team.score_for_races #list tot points
  
 # Set position of bar on X axis
 r1 = np.arange(len(bars1))
