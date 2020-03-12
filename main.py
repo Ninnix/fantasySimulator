@@ -1,6 +1,7 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+from PyQt5.QtWidgets import*
  
 budget = 100
 
@@ -443,6 +444,14 @@ for t in lst_teams:
 simulation(lst_drivers,lst_teams)
 print(final_score(lst_my_drivers,my_team))
 print(sum(my_team.score_for_races))
+
+app = QApplication([]) # Crea un'applicazione Qt
+window = QWidget() # Crea una finestra (ma non e' visibile)
+window.resize(500, 300) # Imposta dimensione e titolo della finestra
+window.setWindowTitle('Fantasy Simulator')
+window.show() # Mostra la finestra
+app.exec_() # Lancia l'interazione con l'utente
+
 # set width of bar
 barWidth = 0.1
 
