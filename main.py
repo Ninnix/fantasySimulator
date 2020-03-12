@@ -5,12 +5,50 @@ import matplotlib.pyplot as plt
 budget = 100
 
 # id of your drivers and team
-id_d0 = 'Hamilton'
-id_d1 = 'Stroll'
+id_d0 = 'Leclerc'
+id_d1 = 'Giovinazzi'
 id_d2 = 'Perez'
 id_d3 = 'Russel'
-id_d4 = 'Kubica'
-id_t0 = 'Ferrari'
+id_d4 = 'Grojean'
+id_t0 = 'Mercedes'
+
+# dictionary for the drivers, used to create lst_my_team
+dic_drivers = {
+    'Vettel': '20',
+    'Leclerc': '844',
+    'Hamilton': '1',
+    'Bottas': '822',
+    'Verstappen': '830',
+    'Gasly': '842',
+    'Sainz': '832',
+    'Norris': '846',
+    'Ricciardo': '817',
+    'Hulk': '807',
+    'Kvyat': '826',
+    'Albon': '848',
+    'Perez': '815',
+    'Stroll': '840',
+    'Raikkonen': '8',
+    'Giovinazzi': '841',
+    'Russel': '847',
+    'Kubica': '9',
+    'Grojean': '154',
+    'Magnussen': '825',
+}
+
+# dictionary for the team, used to create my_team
+dic_teams = {
+    'Ferrari': '6',
+    'Mercedes': '131',
+    'Red Bull': '9',
+    'Toro Rosso': '5',
+    'Racing Point': '211',
+    'Alfa Romeo': '51',
+    'McLaren': '1',
+    'Williams': '3',
+    'Renault': '4',
+    'Haas': '210',
+}
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
@@ -132,44 +170,6 @@ for team in lst_teams:
             if driver.team_id[j] == team.id:
                 driver2.append(driver)
     team.drivers = [driver1, driver2]
-
-# dictionary for the drivers, used to create lst_my_team
-dic_drivers = {
-    'Vettel': '20',
-    'Leclerc': '844',
-    'Hamilton': '1',
-    'Bottas': '822',
-    'Verstappen': '830',
-    'Gasly': '842',
-    'Sainz': '832',
-    'Norris': '846',
-    'Ricciardo': '817',
-    'Hulk': '807',
-    'Kvyat': '826',
-    'Albon': '848',
-    'Perez': '815',
-    'Stroll': '840',
-    'Raikkonen': '8',
-    'Giovinazzi': '841',
-    'Russel': '847',
-    'Kubica': '9',
-    'Grojean': '154',
-    'Magnussen': '825',
-}
-
-# dictionary for the team, used to create my_team
-dic_teams = {
-    'Ferrari': '6',
-    'Mercedes': '131',
-    'Red Bull': '9',
-    'Toro Rosso': '5',
-    'Racing Point': '211',
-    'Alfa Romeo': '51',
-    'McLaren': '1',
-    'Williams': '3',
-    'Renault': '4',
-    'Haas': '210',
-}
 
 # compare our driver race results with his team mate for that race ID
 def race_comp(driver, race_id):
@@ -409,13 +409,14 @@ def simulation(lst_drivers,lst_team):
         score.append(race_score)
     return score
 
-def final_score(score):
-    tot = 0
-    for race in score:
-        for x in race:
-            tot = tot + x
-    return tot
-
+def final_score(my_drivers,my_team):
+    if validate(lst_my_drivers, my_team):
+        tot = sum(my_team.score_for_races)
+        for d in my_drivers:
+            tot = tot + sum(d.score_for_races)
+        return tot
+    else:
+        return 'Final score of invalid team is 0'
 # it moves your team in a list called lst_my_team
 lst_my_drivers = []
 for d in lst_drivers:
@@ -433,33 +434,8 @@ for t in lst_teams:
     if t.id == dic_teams[id_t0]:
         my_team = t
 
-validate(lst_my_drivers, my_team)
-
-
-
-#for d in lst_my_team[:-1]:
-#    print(d.name)
-
-#print(lst_drivers[2].pole)
-#print(lst_teams[1].drivers[0][0].pole)
-#print(lst_teams[1].drivers[1][0].pole)
-
-#for d in lst_drivers:
-#    print(str(len(d.pole_mate)) + d.name)
-
-results = simulation(lst_drivers,lst_teams)
-print(results)
-if validate(lst_my_drivers, my_team):
-    print(final_score(results))
-
-#or d in lst_drivers:
-#    print(d.score_for_races)
-
-for t in lst_teams:
-    print(t.score_by_drivers[0])
-    print(t.score_by_drivers[1])
-    print(t.score_by_drivers[2])
-    print(t.score_for_races)
+simulation(lst_drivers,lst_teams)
+print(final_score(lst_my_drivers,my_team))
 
 # set width of bar
 barWidth = 0.1
