@@ -316,7 +316,7 @@ def driver_only(driver,race_id):
     else:
         return 0 + bonus_race_mate + bonus_quali_mate + bonus_FL
 
-        # number of position gained gives 2 pts per position up to 10 pts
+# number of position gained gives 2 pts per position up to 10 pts
 # this function returns points!
 def gain_position(driver,race_id):
     i = lst_races_id.index(race_id)
