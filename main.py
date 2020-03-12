@@ -10,7 +10,7 @@ id_d1 = 'Giovinazzi'
 id_d2 = 'Perez'
 id_d3 = 'Russel'
 id_d4 = 'Grojean'
-id_t0 = 'Red Bull'
+id_t0 = 'Mercedes'
 
 # dictionary for the drivers, used to create lst_my_team
 dic_drivers = {
@@ -476,8 +476,8 @@ plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst
 plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
 plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label=my_team.name + ' driver1')
 plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label=my_team.name + ' driver2')
-plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label='Team streak')
-plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label='Team tot')
+plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label=my_team.name + ' streak')
+plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label=my_team.name + ' tot')
 
 # create label list for the races
 lst_label_race = []
