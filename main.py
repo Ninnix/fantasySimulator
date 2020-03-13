@@ -1,20 +1,24 @@
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
-from PyQt5.QtWidgets import*
- 
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import *
+import sys
+
+from PyQt5.QtCore import Qt
+
 budget = 100
 
 # id of your drivers and team
-id_d0 = 'Leclerc'
-id_d1 = 'Giovinazzi'
+id_d0 = 'Hamilton'
+id_d1 = 'Sainz'
 id_d2 = 'Perez'
 id_d3 = 'Russel'
-id_d4 = 'Grojean'
+id_d4 = 'Kubica'
 id_t0 = 'Mercedes'
 
 # dictionary for the drivers, used to create lst_my_team
-dic_drivers = {
+dic_drivers = { 
     'Vettel': '20',
     'Leclerc': '844',
     'Hamilton': '1',
@@ -367,6 +371,8 @@ def validate(lst_team,t):
 
 # it simulates a season
 def simulation(lst_drivers,lst_team):
+    if len(lst_drivers[0].score_for_races) != 0:
+        return print('Season already simulated')
     score = []
     for race in lst_races_id:
         i = lst_races_id.index(race)
@@ -440,64 +446,106 @@ for d in lst_drivers:
 for t in lst_teams:
     if t.id == dic_teams[id_t0]:
         my_team = t
+# def simulation(lst_drivers,lst_teams):
+#     simulation(lst_drivers,lst_teams)
+#     total_points = final_score(lst_my_drivers,my_team)
+#     Constrtuctor_points = sum(my_team.score_for_races)
 
-simulation(lst_drivers,lst_teams)
-print(final_score(lst_my_drivers,my_team))
-print(sum(my_team.score_for_races))
+def plot():
+    # set width of bar
+    barWidth = 0.1
 
-app = QApplication([]) # Crea un'applicazione Qt
-window = QWidget() # Crea una finestra (ma non e' visibile)
-window.resize(500, 300) # Imposta dimensione e titolo della finestra
-window.setWindowTitle('Fantasy Simulator')
-window.show() # Mostra la finestra
-app.exec_() # Lancia l'interazione con l'utente
+    # set height of bar
+    bars1 = lst_my_drivers[0].score_for_races  # list points driver1
+    bars2 = lst_my_drivers[1].score_for_races  # list points driver2
+    bars3 = lst_my_drivers[2].score_for_races  # list points driver3
+    bars4 = lst_my_drivers[3].score_for_races  # list points driver4
+    bars5 = lst_my_drivers[4].score_for_races  # list points driver5
+    bars6 = my_team.score_by_drivers[0]  # list points driver 1 my team
+    bars7 = my_team.score_by_drivers[1]  # list points driver 2 my team
+    bars8 = my_team.score_by_drivers[2]  # list streak point
+    bars9 = my_team.score_for_races  # list tot points
 
-# set width of bar
-barWidth = 0.1
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars1))
+    r2 = [x + barWidth for x in r1]
+    r3 = [x + barWidth for x in r2]
+    r4 = [x + barWidth for x in r3]
+    r5 = [x + barWidth for x in r4]
+    r6 = [x + barWidth for x in r5]
+    r7 = [x + barWidth for x in r6]
+    r8 = [x + barWidth for x in r7]
+    r9 = [x + barWidth for x in r8]
 
-# set height of bar
-bars1 = lst_my_drivers[0].score_for_races #list points driver1
-bars2 = lst_my_drivers[1].score_for_races #list points driver2
-bars3 = lst_my_drivers[2].score_for_races #list points driver3
-bars4 = lst_my_drivers[3].score_for_races #list points driver4
-bars5 = lst_my_drivers[4].score_for_races #list points driver5
-bars6 = my_team.score_by_drivers[0] #list points driver 1 my team
-bars7 = my_team.score_by_drivers[1] #list points driver 2 my team
-bars8 = my_team.score_by_drivers[2] #list streak point
-bars9 = my_team.score_for_races #list tot points
- 
-# Set position of bar on X axis
-r1 = np.arange(len(bars1))
-r2 = [x + barWidth for x in r1] 
-r3 = [x + barWidth for x in r2]
-r4 = [x + barWidth for x in r3]
-r5 = [x + barWidth for x in r4]
-r6 = [x + barWidth for x in r5]
-r7 = [x + barWidth for x in r6]
-r8 = [x + barWidth for x in r7]
-r9 = [x + barWidth for x in r8]
- 
-# Make the plot
-plt.bar(r1, bars1, color='#ebc83d', width=barWidth, edgecolor='white', label=lst_my_drivers[0].name)
-plt.bar(r2, bars2, color='#badf55', width=barWidth, edgecolor='white', label=lst_my_drivers[1].name)
-plt.bar(r3, bars3, color='#35b1c9', width=barWidth, edgecolor='white', label=lst_my_drivers[2].name)
-plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst_my_drivers[3].name)
-plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
-plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label=my_team.name + ' driver1')
-plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label=my_team.name + ' driver2')
-plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label=my_team.name + ' streak')
-plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label=my_team.name + ' tot')
+    # Make the plot
+    plt.bar(r1, bars1, color='#ebc83d', width=barWidth, edgecolor='white', label=lst_my_drivers[0].name)
+    plt.bar(r2, bars2, color='#badf55', width=barWidth, edgecolor='white', label=lst_my_drivers[1].name)
+    plt.bar(r3, bars3, color='#35b1c9', width=barWidth, edgecolor='white', label=lst_my_drivers[2].name)
+    plt.bar(r4, bars4, color='#b06dad', width=barWidth, edgecolor='white', label=lst_my_drivers[3].name)
+    plt.bar(r5, bars5, color='#e96060', width=barWidth, edgecolor='white', label=lst_my_drivers[4].name)
+    plt.bar(r6, bars6, color='#7f6d5f', width=barWidth, edgecolor='white', label=my_team.name + ' driver1')
+    plt.bar(r7, bars7, color='#557f2d', width=barWidth, edgecolor='white', label=my_team.name + ' driver2')
+    plt.bar(r8, bars8, color='#2d7f5e', width=barWidth, edgecolor='white', label=my_team.name + ' streak')
+    plt.bar(r9, bars9, color='#000000', width=barWidth, edgecolor='white', label=my_team.name + ' tot')
 
-# create label list for the races
-lst_label_race = []
-for id in lst_races_id:
-    lst_label_race.append(dic_races[id])
+    # create label list for the races
+    lst_label_race = []
+    for id in lst_races_id:
+        lst_label_race.append(dic_races[id])
 
-# Add xticks on the middle of the group bars
-plt.xlabel('Races', fontweight='bold')
-plt.ylabel('Points', fontweight='bold')
-plt.xticks([r + barWidth for r in range(len(lst_races_id)+1)], lst_label_race, rotation=45)
- 
-# Create legend & Show graphic
-plt.legend()
-plt.show()
+    # Add xticks on the middle of the group bars
+    plt.xlabel('Races', fontweight='bold')
+    plt.ylabel('Points', fontweight='bold')
+    plt.xticks([r + barWidth for r in range(len(lst_races_id) + 1)], lst_label_race, rotation=45)
+
+    # Create legend & Show graphic
+    plt.legend()
+    plt.show()
+
+
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super(MyWindow,self).__init__()
+        self.initUI()
+
+    def b1_clicked(self):
+        simulation(lst_drivers,lst_teams)
+        self.label.setText("Season simulated")
+        self.update()
+        self.label.setGeometry(50, 80, 200, 30)
+        self.b2.setEnabled(True)
+
+    def b2_clicked(self):
+        plot()
+
+    def initUI(self):
+        self.setGeometry(200, 200, 800, 500)
+        self.setWindowTitle("Fantasy Simulator")
+
+        self.label = QtWidgets.QLabel(self)
+        self.label.setText("Simulate then plot")
+        self.label.setGeometry(50,50,200,30)
+        # self.label.move(50,50)
+
+        self.b1 = QtWidgets.QPushButton(self)
+        self.b1.setGeometry(20, 450, 120, 30)
+        self.b1.setText("Simulate season")
+        self.b1.clicked.connect(self.b1_clicked)
+
+        self.b2 = QtWidgets.QPushButton(self)
+        self.b2.setGeometry(700, 450, 80, 30)
+        self.b2.setText("Plot results")
+        self.b2.clicked.connect(self.b2_clicked)
+        self.b2.setDisabled(True)
+
+    def update(self):
+        self.label.adjustSize()
+
+
+def window():
+    app = QApplication(sys.argv)
+    win = MyWindow()
+    win.show()
+    sys.exit(app.exec_())
+
+window()
