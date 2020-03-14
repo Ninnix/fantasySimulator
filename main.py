@@ -430,7 +430,7 @@ for row in tab_races:
     name_race.append(row[4])
 dic_races = dict(zip(id,name_race))
 
-# it moves your team in a list called lst_my_team
+# it moves your team in a list called lst_my_drivers
 lst_my_drivers = []
 for d in lst_drivers:
     if d.id == dic_drivers[id_d0]:
@@ -446,6 +446,7 @@ for d in lst_drivers:
 for t in lst_teams:
     if t.id == dic_teams[id_t0]:
         my_team = t
+
 # def simulation(lst_drivers,lst_teams):
 #     simulation(lst_drivers,lst_teams)
 #     total_points = final_score(lst_my_drivers,my_team)
@@ -518,29 +519,87 @@ class MyWindow(QMainWindow):
     def b2_clicked(self):
         plot()
 
-    def initUI(self):
-        self.setGeometry(200, 200, 800, 500)
-        self.setWindowTitle("Fantasy Simulator")
+    def get_driver(self):
+        active_drivers = int(self.list_selected_driver.count())
+        # print(active_drivers)
+        if active_drivers + 1 < 6: # 1 represent the driver the "if" will add if true
+            selected_driver =  self.list_driver.currentItem().text()
+            self.list_selected_driver.addItem(selected_driver)
+            # print(selected_driver)
 
+    def get_team(self):
+        active_team = int(self.list_selected_team.count())
+        # print(active_drivers)
+        if active_team + 1 < 2: # 1 represent the driver the "if" will add if true
+            selected_team =  self.list_team.currentItem().text()
+            self.list_selected_team.addItem(selected_team)
+            # print(selected_driver)
+
+    def remove_driver(self):
+        selected_driver = self.list_selected_driver.currentItem()
+        self.list_selected_driver.takeItem(self.list_selected_driver.row(selected_driver))
+
+    def remove_team(self):
+        selected_team = self.list_selected_team.currentItem()
+        self.list_selected_team.takeItem(self.list_selected_team.row(selected_team))
+
+    def initUI(self):
         self.label = QtWidgets.QLabel(self)
         self.label.setText("Simulate then plot")
-        self.label.setGeometry(50,50,200,30)
-        # self.label.move(50,50)
+        self.label.setGeometry(50, 50, 200, 30)
 
         self.b1 = QtWidgets.QPushButton(self)
-        self.b1.setGeometry(20, 450, 120, 30)
+        self.b1.setFixedSize(100,50)
         self.b1.setText("Simulate season")
         self.b1.clicked.connect(self.b1_clicked)
 
         self.b2 = QtWidgets.QPushButton(self)
-        self.b2.setGeometry(700, 450, 80, 30)
+        # self.b2.setGeometry(700, 450, 80, 30)
         self.b2.setText("Plot results")
         self.b2.clicked.connect(self.b2_clicked)
         self.b2.setDisabled(True)
 
+        self.centraldock = QDockWidget('Hi!',self)
+
+        self.setCentralWidget(self.centraldock)
+
+        self.list_driver = QListWidget()
+        self.list_driver.addItems(dic_drivers.keys())
+
+        self.list_team = QListWidget()
+        self.list_team.addItems(dic_teams.keys())
+
+        self.list_selected_driver = QListWidget()
+        self.list_selected_team = QListWidget()
+
+        self.list_driver.itemDoubleClicked.connect(self.get_driver)
+        self.list_team.itemDoubleClicked.connect(self.get_team)
+        self.list_selected_driver.itemDoubleClicked.connect(self.remove_driver)
+        self.list_selected_team.itemDoubleClicked.connect(self.remove_team)
+
+        self.dock1 = QDockWidget('Select Drivers',self)
+        self.addDockWidget(Qt.LeftDockWidgetArea,self.dock1)
+        self.dock1.setWidget(self.list_driver)
+        self.dock1.setFloating(False)
+
+        self.dock2 = QDockWidget('Select Team',self)
+        self.addDockWidget(Qt.LeftDockWidgetArea,self.dock2)
+        self.dock2.setWidget(self.list_team)
+
+        self.dock3 = QDockWidget('Your Drivers',self)
+        self.addDockWidget(Qt.RightDockWidgetArea,self.dock3)
+        self.dock3.setWidget(self.list_selected_driver)
+
+        self.dock4 = QDockWidget('Your Team',self)
+        self.addDockWidget(Qt.RightDockWidgetArea,self.dock4)
+        self.dock4.setWidget(self.list_selected_team)
+        self.dock2.setFloating(False)
+
+        self.setGeometry(200, 200, 800, 500)
+        self.setWindowTitle("Fantasy Simulator")
+
     def update(self):
         self.label.adjustSize()
-
 
 def window():
     app = QApplication(sys.argv)
