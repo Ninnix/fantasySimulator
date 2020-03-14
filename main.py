@@ -422,6 +422,26 @@ def final_score(my_drivers,my_team):
     else:
         return 'Final score of invalid team is 0'
 
+# create list with drivers prices
+lst_drivers_prices = []
+for d in lst_drivers:
+    lst_drivers_prices.append(d.price)
+
+# create list with teams prices
+lst_teams_prices = []
+for t in lst_teams:
+    lst_teams_prices.append(t.price)
+
+# create a list of str that contains drivers names and price
+lst_d_with_prices = []
+for d, p in zip(lst_drivers, lst_drivers_prices):
+    lst_d_with_prices.append(d.name + ' (' + p + ')')
+
+lst_t_with_prices = []
+for t, p in zip(lst_teams,lst_teams_prices):
+    lst_t_with_prices.append(t.name + ' (' + p + ')')
+
+
 # create dictionary for races name
 id = []
 name_race = []
@@ -564,10 +584,10 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(self.centraldock)
 
         self.list_driver = QListWidget()
-        self.list_driver.addItems(dic_drivers.keys())
+        self.list_driver.addItems(lst_d_with_prices)
 
         self.list_team = QListWidget()
-        self.list_team.addItems(dic_teams.keys())
+        self.list_team.addItems(lst_t_with_prices)
 
         self.list_selected_driver = QListWidget()
         self.list_selected_team = QListWidget()
