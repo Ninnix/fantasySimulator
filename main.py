@@ -432,15 +432,15 @@ lst_teams_prices = []
 for t in lst_teams:
     lst_teams_prices.append(t.price)
 
-# create a list of str that contains drivers names and price
+# create a list of str that contains drivers names and prices
 lst_d_with_prices = []
 for d, p in zip(lst_drivers, lst_drivers_prices):
-    lst_d_with_prices.append(d.name + ' (' + p + ')')
+    lst_d_with_prices.append(d.name + ' (' + p + '€)')
 
+# create a list of str that contains teams names and prices
 lst_t_with_prices = []
 for t, p in zip(lst_teams,lst_teams_prices):
-    lst_t_with_prices.append(t.name + ' (' + p + ')')
-
+    lst_t_with_prices.append(t.name + ' (' + p + '€)')
 
 # create dictionary for races name
 id = []
@@ -532,7 +532,7 @@ class MyWindow(QMainWindow):
     def b1_clicked(self):
         simulation(lst_drivers,lst_teams)
         self.label.setText("Season simulated")
-        self.update()
+        self.update_label()
         self.label.setGeometry(50, 80, 200, 30)
         self.b2.setEnabled(True)
 
@@ -580,7 +580,6 @@ class MyWindow(QMainWindow):
         self.b2.setDisabled(True)
 
         self.centraldock = QDockWidget('Hi!',self)
-
         self.setCentralWidget(self.centraldock)
 
         self.list_driver = QListWidget()
@@ -618,7 +617,7 @@ class MyWindow(QMainWindow):
         self.setGeometry(200, 200, 800, 500)
         self.setWindowTitle("Fantasy Simulator")
 
-    def update(self):
+    def update_label(self):
         self.label.adjustSize()
 
 def window():
