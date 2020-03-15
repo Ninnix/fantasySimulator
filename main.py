@@ -412,7 +412,7 @@ def simulation(lst_drivers,lst_team):
     return score
 
 def final_score(my_drivers,my_team):
-    if validate(lst_my_drivers, my_team):
+    if validate(my_drivers, my_team):
         tot = sum(my_team.score_for_races)
         for d in my_drivers:
             tot = tot + sum(d.score_for_races)
@@ -652,7 +652,7 @@ class MyWindow(QMainWindow):
         self.dockedWidget.layout().addWidget(self.b2)
 
 
-        self.setGeometry(200, 200, 800, 500)
+        self.setGeometry(200, 200, 800, 1000)
         self.setWindowTitle("Fantasy Simulator")
 
     def update_label(self):
