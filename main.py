@@ -371,8 +371,6 @@ def validate(lst_team,t):
 
 # it simulates a season
 def simulation(lst_drivers,lst_team):
-    if len(lst_drivers[0].score_for_races) != 0:
-        return print('Season already simulated')
     score = []
     for race in lst_races_id:
         i = lst_races_id.index(race)
@@ -451,28 +449,37 @@ for row in tab_races:
 dic_races = dict(zip(id,name_race))
 
 # it moves your team in a list called lst_my_drivers
-lst_my_drivers = []
-for d in lst_drivers:
-    if d.id == dic_drivers[id_d0]:
-        lst_my_drivers.append(d)
-    if d.id == dic_drivers[id_d1]:
-        lst_my_drivers.append(d)
-    if d.id == dic_drivers[id_d2]:
-        lst_my_drivers.append(d)
-    if d.id == dic_drivers[id_d3]:
-        lst_my_drivers.append(d)
-    if d.id == dic_drivers[id_d4]:
-        lst_my_drivers.append(d)
-for t in lst_teams:
-    if t.id == dic_teams[id_t0]:
-        my_team = t
+
+def name_to_object(lst_my_drivers_fullname,my_team_fullname):
+    lst_my_drivers_name = []
+    for fullname in lst_my_drivers_fullname:
+        splitted = fullname.split()
+        lst_my_drivers_name.append(splitted[0])
+    my_team_name = []
+    splitted = my_team_fullname.split()
+    splitted.pop()
+    my_team_name = splitted
+    if len(my_team_name) == 2:
+         my_team_name = my_team_name[0] + ' ' + my_team_name[1]
+    else:
+        my_team_name = str(my_team_name[0])
+    lst_my_drivers = []
+    for d in lst_drivers:
+        for name in lst_my_drivers_name:
+            if d.id == dic_drivers[name]:
+                lst_my_drivers.append(d)
+    for t in lst_teams:
+        if t.id == dic_teams[my_team_name]:
+            my_team = t
+    my_team_obj = [lst_my_drivers,my_team]
+    return my_team_obj
 
 # def simulation(lst_drivers,lst_teams):
 #     simulation(lst_drivers,lst_teams)
 #     total_points = final_score(lst_my_drivers,my_team)
 #     Constrtuctor_points = sum(my_team.score_for_races)
 
-def plot():
+def plot(lst_my_drivers,my_team):
     # set width of bar
     barWidth = 0.1
 
@@ -530,14 +537,29 @@ class MyWindow(QMainWindow):
         self.initUI()
 
     def b1_clicked(self):
-        simulation(lst_drivers,lst_teams)
-        self.label.setText("Season simulated")
-        self.update_label()
-        self.label.setGeometry(50, 80, 200, 30)
+        simulation(lst_drivers, lst_teams)
+        # self.label.setText("Season simulated")
+        # self.update_label()
+        # self.label.setGeometry(50, 80, 200, 30)
+
         self.b2.setEnabled(True)
+        self.b1.setEnabled(False)
 
     def b2_clicked(self):
-        plot()
+        if plt.fignum_exists(plt.gcf().number):
+            plt.close() # close plot if already open
+
+        lst_my_drivers = []
+        range_d = range(0,int(self.list_selected_driver.count()))
+        for i in range_d:
+            lst_my_drivers.append(self.list_selected_driver.item(i).text())
+        my_team = self.list_selected_team.item(0).text()
+
+        my_team_obj = name_to_object(lst_my_drivers,my_team)
+        self.lst_my_drivers = my_team_obj[0]
+        self.my_team = my_team_obj[1]
+
+        plot(self.lst_my_drivers,self.my_team)
 
     def get_driver(self):
         active_drivers = int(self.list_selected_driver.count())
@@ -569,17 +591,17 @@ class MyWindow(QMainWindow):
         self.label.setGeometry(50, 50, 200, 30)
 
         self.b1 = QtWidgets.QPushButton(self)
-        self.b1.setFixedSize(100,50)
+        self.b1.setGeometry(0,0,100,30)
         self.b1.setText("Simulate season")
         self.b1.clicked.connect(self.b1_clicked)
 
         self.b2 = QtWidgets.QPushButton(self)
-        # self.b2.setGeometry(700, 450, 80, 30)
+        self.b2.setGeometry(700, 450, 80, 30)
         self.b2.setText("Plot results")
         self.b2.clicked.connect(self.b2_clicked)
         self.b2.setDisabled(True)
 
-        self.centraldock = QDockWidget('Hi!',self)
+        self.centraldock = QDockWidget('',self)
         self.setCentralWidget(self.centraldock)
 
         self.list_driver = QListWidget()
@@ -613,6 +635,22 @@ class MyWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea,self.dock4)
         self.dock4.setWidget(self.list_selected_team)
         self.dock2.setFloating(False)
+
+        hbox = QHBoxLayout()
+        # hbox.addStretch(1)
+        hbox.addWidget(self.b1)
+        hbox.addWidget(self.b2)
+        #
+        vbox = QVBoxLayout()
+        # vbox.addStretch(1)
+        vbox.addLayout(hbox)
+
+        self.dockedWidget = QWidget(self)
+        self.centraldock.setWidget(self.dockedWidget)
+        self.dockedWidget.setLayout(vbox)
+        self.dockedWidget.layout().addWidget(self.b1)
+        self.dockedWidget.layout().addWidget(self.b2)
+
 
         self.setGeometry(200, 200, 800, 500)
         self.setWindowTitle("Fantasy Simulator")
