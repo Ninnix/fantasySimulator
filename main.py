@@ -37,15 +37,16 @@ class Team:
         self.id = id
         self.price = price
         self.points = points
-        self.drivers = []
+        self.drivers = [[] for _ in range(22)]
         self.score_by_drivers = [[], [], []]
         self.score_for_races = []
 
 csv_races = 'csv/races.csv'
 csv_results = 'csv/results.csv'
 csv_qualifying = 'csv/qualifying.csv'
-csv_fantasy_drivers = 'csv/fantasy_driver.csv'
-csv_fantasy_teams = 'csv/fantasy_team.csv'
+csv_fantasy_drivers = 'csv/fantasy_driver_2018.csv'
+csv_fantasy_teams = 'csv/fantasy_team_2018.csv'
+year = '2018'
 
 lst_races_id = []
 tab_races = []
@@ -60,7 +61,7 @@ def read_season():
         # lst_races_id = []
         # tab_races = []
         for row in reader_races:
-            if '2019' == row[1]:
+            if year == row[1]:
                 lst_races_id.append(row[0])
                 tab_races.append(row)
 
@@ -127,21 +128,34 @@ def read_season():
         driver.pole = pole
         driver.pole_mate = pole_mate
 
+    # # assign each driver to his team
+    # for team in lst_teams:
+    #     driver1 = []
+    #     driver2 = []
+    #     for race in lst_races_id:
+    #         for i in range(0,20,2):
+    #             j = lst_races_id.index(race)
+    #             driver = lst_drivers[i]
+    #             if driver.team_id[j] == team.id:
+    #                 driver1.append(driver)
+    #         for i in range(1,20,2):
+    #             j = lst_races_id.index(race)
+    #             driver = lst_drivers[i]
+    #             if driver.team_id[j] == team.id:
+    #                 driver2.append(driver)
+    #     team.drivers = [driver1, driver2]
+
     # assign each driver to his team
     for team in lst_teams:
         driver1 = []
         driver2 = []
         for race in lst_races_id:
-            for i in range(0,20,2):
-                j = lst_races_id.index(race)
-                driver = lst_drivers[i]
-                if driver.team_id[j] == team.id:
-                    driver1.append(driver)
-            for i in range(1,20,2):
-                j = lst_races_id.index(race)
-                driver = lst_drivers[i]
-                if driver.team_id[j] == team.id:
-                    driver2.append(driver)
+            j = lst_races_id.index(race)
+            for d in lst_drivers:
+                if d.team_id[j] == team.id:
+                    team.drivers[j].append(d)
+            driver1.append(team.drivers[j][0])
+            driver2.append(team.drivers[j][1])
         team.drivers = [driver1, driver2]
 
 # compare our driver race results with his team mate for that race ID
