@@ -3,57 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
 import sys
 
-from PyQt5.QtCore import Qt
-
 budget = 100
-
-# id of your drivers and team
-id_d0 = 'Hamilton'
-id_d1 = 'Sainz'
-id_d2 = 'Perez'
-id_d3 = 'Russel'
-id_d4 = 'Kubica'
-id_t0 = 'Mercedes'
-
-# dictionary for the drivers, used to create lst_my_team
-dic_drivers = { 
-    'Vettel': '20',
-    'Leclerc': '844',
-    'Hamilton': '1',
-    'Bottas': '822',
-    'Verstappen': '830',
-    'Gasly': '842',
-    'Sainz': '832',
-    'Norris': '846',
-    'Ricciardo': '817',
-    'Hulk': '807',
-    'Kvyat': '826',
-    'Albon': '848',
-    'Perez': '815',
-    'Stroll': '840',
-    'Raikkonen': '8',
-    'Giovinazzi': '841',
-    'Russel': '847',
-    'Kubica': '9',
-    'Grojean': '154',
-    'Magnussen': '825',
-}
-
-# dictionary for the team, used to create my_team
-dic_teams = {
-    'Ferrari': '6',
-    'Mercedes': '131',
-    'Red Bull': '9',
-    'Toro Rosso': '5',
-    'Racing Point': '211',
-    'Alfa Romeo': '51',
-    'McLaren': '1',
-    'Williams': '3',
-    'Renault': '4',
-    'Haas': '210',
-}
 
 class Driver:
     def __init__(self, name, id, team, team_id, mate, mate_id, price, turbo, points):
@@ -88,95 +41,108 @@ class Team:
         self.score_by_drivers = [[], [], []]
         self.score_for_races = []
 
-with open('csv/races.csv') as f:
-    reader_races = csv.reader(f)
-    lst_races_id = []
-    tab_races = []
-    for row in reader_races:
-        if '2019' == row[1]:
-            lst_races_id.append(row[0])
-            tab_races.append(row)
-    #print(lst_races_id)
+csv_races = 'csv/races.csv'
+csv_results = 'csv/results.csv'
+csv_qualifying = 'csv/qualifying.csv'
+csv_fantasy_drivers = 'csv/fantasy_driver.csv'
+csv_fantasy_teams = 'csv/fantasy_team.csv'
 
-with open('csv/results.csv') as g:
-    reader_results = csv.reader(g)
-    tab_results = []
-    for row in reader_results:
-        for id in lst_races_id:
-            if row[1] == id:
-                tab_results.append(row)
+lst_races_id = []
+tab_races = []
+tab_results = []
+tab_qualifying = []
+lst_drivers = []
+lst_teams = []
 
-with open('csv/qualifying.csv') as h:
-    reader_qualifying = csv.reader(h)
-    tab_qualifying = []
-    for row in reader_qualifying:
-        for id in lst_races_id:
-            if row[1] == id:
-                tab_qualifying.append(row)
+def read_season():
+    with open(csv_races) as f:
+        reader_races = csv.reader(f)
+        # lst_races_id = []
+        # tab_races = []
+        for row in reader_races:
+            if '2019' == row[1]:
+                lst_races_id.append(row[0])
+                tab_races.append(row)
 
-with open('csv/fantasy_driver.csv') as d:
-    reader_f_driver = csv.reader(d)
-    lst_drivers = []
-    for row in reader_f_driver:
-        if row[0] != 'Driver':
-            lst_drivers.append(Driver(row[0], row[1], row[2], row[3], row[4], row[5], row[6], False, 0))
+    with open(csv_results) as g:
+        reader_results = csv.reader(g)
+        # tab_results = []
+        for row in reader_results:
+            for id in lst_races_id:
+                if row[1] == id:
+                    tab_results.append(row)
 
-with open('csv/fantasy_team.csv') as t:
-    reader_f_team = csv.reader(t)
-    lst_teams = []
-    for row in reader_f_team:
-        if row[0] != 'Team':
-            lst_teams.append(Team(row[0], row[1], row[2], 0))
+    with open(csv_qualifying) as h:
+        reader_qualifying = csv.reader(h)
+        # tab_qualifying = []
+        for row in reader_qualifying:
+            for id in lst_races_id:
+                if row[1] == id:
+                    tab_qualifying.append(row)
 
-# add different properties to each driver based on race results
-for driver in lst_drivers:
-    for race1 in tab_results:
-        if race1[2] == driver.id:
-            driver.race_order.append(race1[8])
-            driver.team_id.append(race1[3])
-            driver.race.append(race1[7])
-            driver.grid.append(race1[5])
-            driver.status.append(race1[17])
-            if race1[14] == r"\N":
-                driver.rank_FL.append('21')
-            else:
-                driver.rank_FL.append(race1[14])
-            for race2 in tab_results:
-                if race2[1] == race1[1] and race2[3] == race1[3] and race2[2] != race1[2]:
-                    driver.mate_id.append(race2[2])
-                    driver.race_mate.append(race2[7])
-                    driver.grid_mate.append(race2[5])
-                    driver.mate_race_order.append(race2[8])
+    with open(csv_fantasy_drivers) as d:
+        reader_f_driver = csv.reader(d)
+        # lst_drivers = []
+        for row in reader_f_driver:
+            if row[0] != 'Driver':
+                lst_drivers.append(Driver(row[0], row[1], row[2], row[3], row[4], row[5], row[6], False, 0))
 
-# add different properties to each driver based on qualifying results
-for driver in lst_drivers:
-    pole = []
-    pole_mate = []
-    for quali in tab_qualifying:
-        if quali[2] == driver.id:
-            pole.append(quali[5])
-            for quali1 in tab_qualifying:
-                if quali[1] == quali1[1] and quali[3] == quali1[3] and quali[2] != quali1[2]:
-                    pole_mate.append(quali1[5])
-    driver.pole = pole
-    driver.pole_mate = pole_mate
+    with open(csv_fantasy_teams) as t:
+        reader_f_team = csv.reader(t)
+        # lst_teams = []
+        for row in reader_f_team:
+            if row[0] != 'Team':
+                lst_teams.append(Team(row[0], row[1], row[2], 0))
 
-# assign each driver to his team
-for team in lst_teams:
-    driver1 = []
-    driver2 = []
-    for race in lst_races_id:
-        for i in range(0,20,2):
-            j = lst_races_id.index(race)
-            driver = lst_drivers[i]
-            if driver.team_id[j] == team.id:
-                driver1.append(driver)
-        for i in range(1,20,2):
-            j = lst_races_id.index(race)
-            driver = lst_drivers[i]
-            if driver.team_id[j] == team.id:
-                driver2.append(driver)
-    team.drivers = [driver1, driver2]
+    # add different properties to each driver based on race results
+    for driver in lst_drivers:
+        for race1 in tab_results:
+            if race1[2] == driver.id:
+                driver.race_order.append(race1[8])
+                driver.team_id.append(race1[3])
+                driver.race.append(race1[7])
+                driver.grid.append(race1[5])
+                driver.status.append(race1[17])
+                if race1[14] == r"\N":
+                    driver.rank_FL.append('21')
+                else:
+                    driver.rank_FL.append(race1[14])
+                for race2 in tab_results:
+                    if race2[1] == race1[1] and race2[3] == race1[3] and race2[2] != race1[2]:
+                        driver.mate_id.append(race2[2])
+                        driver.race_mate.append(race2[7])
+                        driver.grid_mate.append(race2[5])
+                        driver.mate_race_order.append(race2[8])
+
+    # add different properties to each driver based on qualifying results
+    for driver in lst_drivers:
+        pole = []
+        pole_mate = []
+        for quali in tab_qualifying:
+            if quali[2] == driver.id:
+                pole.append(quali[5])
+                for quali1 in tab_qualifying:
+                    if quali[1] == quali1[1] and quali[3] == quali1[3] and quali[2] != quali1[2]:
+                        pole_mate.append(quali1[5])
+        driver.pole = pole
+        driver.pole_mate = pole_mate
+
+    # assign each driver to his team
+    for team in lst_teams:
+        driver1 = []
+        driver2 = []
+        for race in lst_races_id:
+            for i in range(0,20,2):
+                j = lst_races_id.index(race)
+                driver = lst_drivers[i]
+                if driver.team_id[j] == team.id:
+                    driver1.append(driver)
+            for i in range(1,20,2):
+                j = lst_races_id.index(race)
+                driver = lst_drivers[i]
+                if driver.team_id[j] == team.id:
+                    driver2.append(driver)
+        team.drivers = [driver1, driver2]
 
 # compare our driver race results with his team mate for that race ID
 def race_comp(driver, race_id):
@@ -420,6 +386,8 @@ def final_score(my_drivers,my_team):
     else:
         return 'Final score of invalid team is 0'
 
+read_season()
+
 # create list with drivers prices
 lst_drivers_prices = []
 for d in lst_drivers:
@@ -440,13 +408,29 @@ lst_t_with_prices = []
 for t, p in zip(lst_teams,lst_teams_prices):
     lst_t_with_prices.append(t.name + ' (' + p + '€)')
 
+# create dictionary for drivers name
+lst_id_drivers = []
+lst_name_drivers = []
+for d in lst_drivers:
+    lst_id_drivers.append(d.id)
+    lst_name_drivers.append(d.name)
+dic_drivers = dict(zip(lst_name_drivers,lst_id_drivers))
+
+# create dictionary for teams name
+lst_id_teams = []
+lst_name_teams = []
+for t in lst_teams:
+    lst_id_teams.append(t.id)
+    lst_name_teams.append(t.name)
+dic_teams = dict(zip(lst_name_teams,lst_id_teams))
+
 # create dictionary for races name
-id = []
-name_race = []
+lst_id_races = []
+lst_name_races = []
 for row in tab_races:
-    id.append(row[0])
-    name_race.append(row[4])
-dic_races = dict(zip(id,name_race))
+    lst_id_races.append(row[0])
+    lst_name_races.append(row[4])
+dic_races = dict(zip(lst_id_races,lst_name_races))
 
 # it moves your team in a list called lst_my_drivers
 
@@ -529,7 +513,6 @@ def plot(lst_my_drivers,my_team):
     # Create legend & Show graphic
     plt.legend()
     plt.show()
-
 
 class MyWindow(QMainWindow):
     def __init__(self):
