@@ -128,23 +128,6 @@ def read_season():
         driver.pole = pole
         driver.pole_mate = pole_mate
 
-    # # assign each driver to his team
-    # for team in lst_teams:
-    #     driver1 = []
-    #     driver2 = []
-    #     for race in lst_races_id:
-    #         for i in range(0,20,2):
-    #             j = lst_races_id.index(race)
-    #             driver = lst_drivers[i]
-    #             if driver.team_id[j] == team.id:
-    #                 driver1.append(driver)
-    #         for i in range(1,20,2):
-    #             j = lst_races_id.index(race)
-    #             driver = lst_drivers[i]
-    #             if driver.team_id[j] == team.id:
-    #                 driver2.append(driver)
-    #     team.drivers = [driver1, driver2]
-
     # assign each driver to his team
     for team in lst_teams:
         driver1 = []
