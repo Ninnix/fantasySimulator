@@ -412,6 +412,7 @@ def simulation(lst_drivers,lst_team):
         score.append(race_score)
     return score
 
+# calcolate total score
 def final_score(my_drivers,my_team):
     if validate(my_drivers, my_team):
         tot = sum(my_team.score_for_races)
@@ -422,26 +423,6 @@ def final_score(my_drivers,my_team):
         return 'Final score of invalid team is 0'
 
 read_season(year)
-
-# create list with drivers prices
-lst_drivers_prices = []
-for d in lst_drivers:
-    lst_drivers_prices.append(d.price)
-
-# create list with teams prices
-lst_teams_prices = []
-for t in lst_teams:
-    lst_teams_prices.append(t.price)
-
-# create a list of str that contains drivers names and prices
-lst_d_with_prices = []
-for d, p in zip(lst_drivers, lst_drivers_prices):
-    lst_d_with_prices.append(d.name + ' (' + p + '€)')
-
-# create a list of str that contains teams names and prices
-lst_t_with_prices = []
-for t, p in zip(lst_teams,lst_teams_prices):
-    lst_t_with_prices.append(t.name + ' (' + p + '€)')
 
 # it moves your team in a list called lst_my_drivers
 def name_to_object(lst_my_drivers_fullname,my_team_fullname):
@@ -578,6 +559,11 @@ class MyWindow(QMainWindow):
         if plt.fignum_exists(plt.gcf().number):
             plt.close() # close plot if already open
 
+        if int(self.list_selected_driver.count()) == 0 and int(self.list_selected_team.count()) == 0 :
+            return print('Select your 5 drivers and your one team')
+        if int(self.list_selected_driver.count()) < 5 or int(self.list_selected_team.count()) == 0 :
+            return print('Drivers or team selection not complete, select 5 drivers and 1 team')
+
         lst_my_drivers = []
         range_d = range(0,int(self.list_selected_driver.count()))
         for i in range_d:
@@ -617,6 +603,35 @@ class MyWindow(QMainWindow):
     def year_switch(self):
         year_selection(self)
 
+        # update the Qlists to display that year drivers and teams
+        self.list_driver.clear()
+        self.list_driver.addItems(self.list_names_drivers())
+        self.list_team.clear()
+        self.list_team.addItems(self.list_names_teams())
+
+    def list_names_drivers(self):
+        # create list with drivers prices
+        self.lst_drivers_prices = []
+        for d in lst_drivers:
+            self.lst_drivers_prices.append(d.price)
+
+        # create a list of str that contains drivers names and prices
+        self.lst_d_with_prices = []
+        for d, p in zip(lst_drivers, self.lst_drivers_prices):
+            self.lst_d_with_prices.append(d.name + ' (' + p + '€)')
+        return self.lst_d_with_prices
+
+    def list_names_teams(self):
+        # create list with teams prices
+        self.lst_teams_prices = []
+        for t in lst_teams:
+            self.lst_teams_prices.append(t.price)
+
+        # create a list of str that contains teams names and prices
+        self.lst_t_with_prices = []
+        for t, p in zip(lst_teams, self.lst_teams_prices):
+            self.lst_t_with_prices.append(t.name + ' (' + p + '€)')
+        return self.lst_t_with_prices
 
     def initUI(self):
         self.label = QtWidgets.QLabel(self)
@@ -639,10 +654,10 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(self.centraldock)
 
         self.list_driver = QListWidget()
-        self.list_driver.addItems(lst_d_with_prices)
+        self.list_driver.addItems(self.list_names_drivers())
 
         self.list_team = QListWidget()
-        self.list_team.addItems(lst_t_with_prices)
+        self.list_team.addItems(self.list_names_teams())
 
         self.list_selected_driver = QListWidget()
         self.list_selected_team = QListWidget()
@@ -655,6 +670,8 @@ class MyWindow(QMainWindow):
         self.year19 = QRadioButton('2019')
         self.year19.toggled.connect(self.year_switch)
         self.year18 = QRadioButton('2018')
+        self.year18.toggled.connect(self.year_switch)
+        self.year18.toggle()
 
         self.dock1 = QDockWidget('Select Drivers',self)
         self.addDockWidget(Qt.LeftDockWidgetArea,self.dock1)
