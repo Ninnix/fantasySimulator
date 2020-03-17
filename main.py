@@ -54,8 +54,19 @@ tab_results = []
 tab_qualifying = []
 lst_drivers = []
 lst_teams = []
+lst_my_drivers = []
+my_team = []
+dic_drivers = dict()
+dic_teams = dict()
+dic_races = dict()
 
-def read_season():
+def read_season(year):
+    if year == '2019':
+        csv_fantasy_drivers = 'csv/fantasy_driver_2019.csv'
+        csv_fantasy_teams = 'csv/fantasy_team_2019.csv'
+    if year == '2018':
+        csv_fantasy_drivers = 'csv/fantasy_driver_2018.csv'
+        csv_fantasy_teams = 'csv/fantasy_team_2018.csv'
     with open(csv_races) as f:
         reader_races = csv.reader(f)
         # lst_races_id = []
@@ -140,6 +151,33 @@ def read_season():
             driver1.append(team.drivers[j][0])
             driver2.append(team.drivers[j][1])
         team.drivers = [driver1, driver2]
+
+    # create dictionary for drivers name
+    lst_id_drivers = []
+    lst_name_drivers = []
+    for d in lst_drivers:
+        lst_id_drivers.append(d.id)
+        lst_name_drivers.append(d.name)
+    dic_drivers_loc = dict(zip(lst_name_drivers, lst_id_drivers))
+    dic_drivers.update(dic_drivers_loc)
+
+    # create dictionary for teams name
+    lst_id_teams = []
+    lst_name_teams = []
+    for t in lst_teams:
+        lst_id_teams.append(t.id)
+        lst_name_teams.append(t.name)
+    dic_teams_loc = dict(zip(lst_name_teams, lst_id_teams))
+    dic_teams.update(dic_teams_loc)
+
+    # create dictionary for races name
+    lst_id_races = []
+    lst_name_races = []
+    for row in tab_races:
+        lst_id_races.append(row[0])
+        lst_name_races.append(row[4])
+    dic_races_loc = dict(zip(lst_id_races, lst_name_races))
+    dic_races.update(dic_races_loc)
 
 # compare our driver race results with his team mate for that race ID
 def race_comp(driver, race_id):
@@ -372,6 +410,8 @@ def simulation(lst_drivers,lst_team):
             team.score_for_races.append(sum(team_score))
 
         score.append(race_score)
+    for d in lst_drivers:
+        print(d.name)
     return score
 
 def final_score(my_drivers,my_team):
@@ -383,7 +423,7 @@ def final_score(my_drivers,my_team):
     else:
         return 'Final score of invalid team is 0'
 
-read_season()
+read_season(year)
 
 # create list with drivers prices
 lst_drivers_prices = []
@@ -405,32 +445,7 @@ lst_t_with_prices = []
 for t, p in zip(lst_teams,lst_teams_prices):
     lst_t_with_prices.append(t.name + ' (' + p + '€)')
 
-# create dictionary for drivers name
-lst_id_drivers = []
-lst_name_drivers = []
-for d in lst_drivers:
-    lst_id_drivers.append(d.id)
-    lst_name_drivers.append(d.name)
-dic_drivers = dict(zip(lst_name_drivers,lst_id_drivers))
-
-# create dictionary for teams name
-lst_id_teams = []
-lst_name_teams = []
-for t in lst_teams:
-    lst_id_teams.append(t.id)
-    lst_name_teams.append(t.name)
-dic_teams = dict(zip(lst_name_teams,lst_id_teams))
-
-# create dictionary for races name
-lst_id_races = []
-lst_name_races = []
-for row in tab_races:
-    lst_id_races.append(row[0])
-    lst_name_races.append(row[4])
-dic_races = dict(zip(lst_id_races,lst_name_races))
-
 # it moves your team in a list called lst_my_drivers
-
 def name_to_object(lst_my_drivers_fullname,my_team_fullname):
     lst_my_drivers_name = []
     for fullname in lst_my_drivers_fullname:
@@ -511,6 +526,42 @@ def plot(lst_my_drivers,my_team):
     plt.legend()
     plt.show()
 
+def year_selection(self):
+    if self.year19.isChecked():
+        year = '2019'
+
+        del lst_races_id[:]
+        del tab_races[:]
+        del tab_results[:]
+        del tab_qualifying[:]
+        del lst_drivers[:]
+        del lst_teams[:]
+        del lst_my_drivers[:]
+        del my_team[:]
+        dic_drivers.clear()
+        dic_teams.clear()
+        dic_races.clear()
+
+        read_season(year)
+        self.b1.setEnabled(True)
+    else:
+        year = '2018'
+
+        del lst_races_id[:]
+        del tab_races[:]
+        del tab_results[:]
+        del tab_qualifying[:]
+        del lst_drivers[:]
+        del lst_teams[:]
+        del lst_my_drivers[:]
+        del my_team[:]
+        dic_drivers.clear()
+        dic_teams.clear()
+        dic_races.clear()
+
+        read_season(year)
+        self.b1.setEnabled(True)
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super(MyWindow,self).__init__()
@@ -565,6 +616,10 @@ class MyWindow(QMainWindow):
         selected_team = self.list_selected_team.currentItem()
         self.list_selected_team.takeItem(self.list_selected_team.row(selected_team))
 
+    def year_switch(self):
+        year_selection(self)
+
+
     def initUI(self):
         self.label = QtWidgets.QLabel(self)
         self.label.setText("Simulate then plot")
@@ -574,6 +629,7 @@ class MyWindow(QMainWindow):
         self.b1.setGeometry(0,0,100,30)
         self.b1.setText("Simulate season")
         self.b1.clicked.connect(self.b1_clicked)
+        self.b1.setEnabled(False)
 
         self.b2 = QtWidgets.QPushButton(self)
         self.b2.setGeometry(700, 450, 80, 30)
@@ -598,6 +654,10 @@ class MyWindow(QMainWindow):
         self.list_selected_driver.itemDoubleClicked.connect(self.remove_driver)
         self.list_selected_team.itemDoubleClicked.connect(self.remove_team)
 
+        self.year19 = QRadioButton('2019')
+        self.year19.toggled.connect(self.year_switch)
+        self.year18 = QRadioButton('2018')
+
         self.dock1 = QDockWidget('Select Drivers',self)
         self.addDockWidget(Qt.LeftDockWidgetArea,self.dock1)
         self.dock1.setWidget(self.list_driver)
@@ -617,20 +677,27 @@ class MyWindow(QMainWindow):
         self.dock2.setFloating(False)
 
         hbox = QHBoxLayout()
-        # hbox.addStretch(1)
+        box_year = QVBoxLayout()
+        box_year.addWidget(self.year18)
+        box_year.addWidget(self.year19)
+        hbox.addLayout(box_year)
+        hbox.addStretch(1)
         hbox.addWidget(self.b1)
         hbox.addWidget(self.b2)
         #
         vbox = QVBoxLayout()
         # vbox.addStretch(1)
         vbox.addLayout(hbox)
+        vbox.addStretch(1)
+
 
         self.dockedWidget = QWidget(self)
         self.centraldock.setWidget(self.dockedWidget)
         self.dockedWidget.setLayout(vbox)
-        self.dockedWidget.layout().addWidget(self.b1)
-        self.dockedWidget.layout().addWidget(self.b2)
-
+        # self.dockedWidget.layout().addWidget(self.b1)
+        # self.dockedWidget.layout().addWidget(self.b2)
+        # self.dockedWidget.layout().addWidget(self.year18)
+        # self.dockedWidget.layout().addWidget(self.year19)
 
         self.setGeometry(200, 200, 800, 1000)
         self.setWindowTitle("Fantasy Simulator")
