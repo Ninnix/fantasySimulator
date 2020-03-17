@@ -410,8 +410,6 @@ def simulation(lst_drivers,lst_team):
             team.score_for_races.append(sum(team_score))
 
         score.append(race_score)
-    for d in lst_drivers:
-        print(d.name)
     return score
 
 def final_score(my_drivers,my_team):
