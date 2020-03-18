@@ -41,6 +41,7 @@ class Team:
         self.score_by_drivers = [[], [], []]
         self.score_for_races = []
 
+
 csv_races = 'csv/races.csv'
 csv_results = 'csv/results.csv'
 csv_qualifying = 'csv/qualifying.csv'
@@ -69,8 +70,6 @@ def read_season(year):
         csv_fantasy_teams = 'csv/fantasy_team_2018.csv'
     with open(csv_races) as f:
         reader_races = csv.reader(f)
-        # lst_races_id = []
-        # tab_races = []
         for row in reader_races:
             if year == row[1]:
                 lst_races_id.append(row[0])
@@ -78,7 +77,6 @@ def read_season(year):
 
     with open(csv_results) as g:
         reader_results = csv.reader(g)
-        # tab_results = []
         for row in reader_results:
             for id in lst_races_id:
                 if row[1] == id:
@@ -86,7 +84,6 @@ def read_season(year):
 
     with open(csv_qualifying) as h:
         reader_qualifying = csv.reader(h)
-        # tab_qualifying = []
         for row in reader_qualifying:
             for id in lst_races_id:
                 if row[1] == id:
@@ -94,14 +91,12 @@ def read_season(year):
 
     with open(csv_fantasy_drivers) as d:
         reader_f_driver = csv.reader(d)
-        # lst_drivers = []
         for row in reader_f_driver:
             if row[0] != 'Driver':
                 lst_drivers.append(Driver(row[0], row[1], row[2], row[3], row[4], row[5], row[6], False, 0))
 
     with open(csv_fantasy_teams) as t:
         reader_f_team = csv.reader(t)
-        # lst_teams = []
         for row in reader_f_team:
             if row[0] != 'Team':
                 lst_teams.append(Team(row[0], row[1], row[2], 0))
@@ -449,11 +444,6 @@ def name_to_object(lst_my_drivers_fullname,my_team_fullname):
     my_team_obj = [lst_my_drivers,my_team]
     return my_team_obj
 
-# def simulation(lst_drivers,lst_teams):
-#     simulation(lst_drivers,lst_teams)
-#     total_points = final_score(lst_my_drivers,my_team)
-#     Constrtuctor_points = sum(my_team.score_for_races)
-
 def plot(lst_my_drivers,my_team):
     # set width of bar
     barWidth = 0.1
@@ -503,6 +493,7 @@ def plot(lst_my_drivers,my_team):
 
     # Create legend & Show graphic
     plt.legend()
+    plt.grid()
     plt.show()
 
 def year_selection(self):
@@ -559,9 +550,9 @@ class MyWindow(QMainWindow):
         if plt.fignum_exists(plt.gcf().number):
             plt.close() # close plot if already open
 
-        if int(self.list_selected_driver.count()) == 0 and int(self.list_selected_team.count()) == 0 :
+        if int(self.list_selected_driver.count()) == 0 and int(self.list_selected_team.count()) == 0:
             return print('Select your 5 drivers and your one team')
-        if int(self.list_selected_driver.count()) < 5 or int(self.list_selected_team.count()) == 0 :
+        if int(self.list_selected_driver.count()) < 5 or int(self.list_selected_team.count()) == 0:
             return print('Drivers or team selection not complete, select 5 drivers and 1 team')
 
         lst_my_drivers = []
@@ -574,6 +565,9 @@ class MyWindow(QMainWindow):
         self.lst_my_drivers = my_team_obj[0]
         self.my_team = my_team_obj[1]
 
+
+        self.total_points = final_score(self.lst_my_drivers,self.my_team)
+        self.text_total_score.setText(str(self.total_points))
         plot(self.lst_my_drivers,self.my_team)
 
     def get_driver(self):
@@ -608,6 +602,9 @@ class MyWindow(QMainWindow):
         self.list_driver.addItems(self.list_names_drivers())
         self.list_team.clear()
         self.list_team.addItems(self.list_names_teams())
+        # claer selected drivers and team
+        # self.list_selected_driver.clear()
+        # self.list_selected_team.clear()
 
     def list_names_drivers(self):
         # create list with drivers prices
@@ -662,6 +659,13 @@ class MyWindow(QMainWindow):
         self.list_selected_driver = QListWidget()
         self.list_selected_team = QListWidget()
 
+        self.total_point_label = QtWidgets.QLabel(self,)
+        self.total_point_label.setText('Total points:')
+
+        self.text_total_score = QTextEdit(self)
+        self.text_total_score.setReadOnly(True)
+        self.text_total_score.setFixedHeight(30)
+
         self.list_driver.itemDoubleClicked.connect(self.get_driver)
         self.list_team.itemDoubleClicked.connect(self.get_team)
         self.list_selected_driver.itemDoubleClicked.connect(self.remove_driver)
@@ -691,30 +695,45 @@ class MyWindow(QMainWindow):
         self.dock4.setWidget(self.list_selected_team)
         self.dock2.setFloating(False)
 
-        hbox = QHBoxLayout()
         box_year = QVBoxLayout()
         box_year.addWidget(self.year18)
         box_year.addWidget(self.year19)
-        hbox.addLayout(box_year)
+
+        box_total_score = QHBoxLayout()
+        box_total_score.addWidget(self.total_point_label)
+        box_total_score.addStretch(1)
+        box_total_score.addWidget(self.text_total_score)
+
+        box_scores = QVBoxLayout()
+        box_scores.addLayout(box_total_score)
+        box_scores.addStretch(1)
+
+        hbox = QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(self.b1)
         hbox.addWidget(self.b2)
-        #
-        vbox = QVBoxLayout()
-        # vbox.addStretch(1)
-        vbox.addLayout(hbox)
-        vbox.addStretch(1)
 
+        box_scores.addLayout(hbox)
+
+        H_big_box = QHBoxLayout()
+        # vbox.addStretch(1)
+        H_big_box.addLayout(box_year)
+        # H_big_box.addStretch(1)
+        H_big_box.addLayout(box_scores)
+
+        V_big_box = QVBoxLayout()
+        V_big_box.addLayout(H_big_box)
+        V_big_box.addStretch(1)
 
         self.dockedWidget = QWidget(self)
         self.centraldock.setWidget(self.dockedWidget)
-        self.dockedWidget.setLayout(vbox)
+        self.dockedWidget.setLayout(V_big_box)
         # self.dockedWidget.layout().addWidget(self.b1)
         # self.dockedWidget.layout().addWidget(self.b2)
         # self.dockedWidget.layout().addWidget(self.year18)
         # self.dockedWidget.layout().addWidget(self.year19)
 
-        self.setGeometry(200, 200, 800, 1000)
+        self.setGeometry(200, 200, 1000, 1000)
         self.setWindowTitle("Fantasy Simulator")
 
     def update_label(self):
