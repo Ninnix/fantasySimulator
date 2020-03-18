@@ -569,6 +569,7 @@ class MyWindow(QMainWindow):
         self.total_points = final_score(self.lst_my_drivers,self.my_team)
         self.text_total_score.setText(str(self.total_points))
         plot(self.lst_my_drivers,self.my_team)
+        self.text_total_score.setAlignment(Qt.AlignRight)
 
     def get_driver(self):
         active_drivers = int(self.list_selected_driver.count())
@@ -665,6 +666,7 @@ class MyWindow(QMainWindow):
         self.text_total_score = QTextEdit(self)
         self.text_total_score.setReadOnly(True)
         self.text_total_score.setFixedHeight(30)
+
 
         self.list_driver.itemDoubleClicked.connect(self.get_driver)
         self.list_team.itemDoubleClicked.connect(self.get_team)
