@@ -444,6 +444,28 @@ def name_to_object(lst_my_drivers_fullname,my_team_fullname):
     my_team_obj = [lst_my_drivers,my_team]
     return my_team_obj
 
+def d_name_to_object(driver_name):
+    splitted = driver_name.split()
+    driver_name = splitted[0]
+    for d in lst_drivers:
+        if d.id == dic_drivers[driver_name]:
+                driver_obj = d
+    return driver_obj
+
+def t_name_to_obj(team_name):
+    my_team_name = []
+    splitted = team_name.split()
+    splitted.pop()
+    my_team_name = splitted
+    if len(my_team_name) == 2:
+         my_team_name = my_team_name[0] + ' ' + my_team_name[1]
+    else:
+        my_team_name = str(my_team_name[0])
+    for t in lst_teams:
+        if t.id == dic_teams[my_team_name]:
+            my_team = t
+    return my_team
+
 def plot(lst_my_drivers,my_team):
     # set width of bar
     barWidth = 0.1
@@ -514,6 +536,7 @@ def year_selection(self):
 
         read_season(year)
         self.b1.setEnabled(True)
+
     else:
         year = '2018'
 
@@ -535,6 +558,7 @@ def year_selection(self):
 class MyWindow(QMainWindow):
     def __init__(self):
         super(MyWindow,self).__init__()
+        self.budget_check = False
         self.initUI()
 
     def b1_clicked(self):
@@ -543,8 +567,11 @@ class MyWindow(QMainWindow):
         # self.update_label()
         # self.label.setGeometry(50, 80, 200, 30)
 
-        self.b2.setEnabled(True)
+        self.b2.setEnabled(self.budget_check)
         self.b1.setEnabled(False)
+        self.simulation_check = True
+        if int(self.list_selected_driver.count()) + int(self.list_selected_team.count()) == 6 and self.budget_check:
+            self.b2.setEnabled(True)
 
     def b2_clicked(self):
         if plt.fignum_exists(plt.gcf().number):
@@ -585,7 +612,19 @@ class MyWindow(QMainWindow):
         if active_drivers + 1 < 6: # 1 represent the driver the "if" will add if true
             selected_driver =  self.list_driver.currentItem().text()
             self.list_selected_driver.addItem(selected_driver)
-            # print(selected_driver)
+            selected_driver_obj = d_name_to_object(selected_driver)
+            driver_cost = selected_driver_obj.price
+            remaning_budget = self.text_budget.toPlainText()
+            new_budget = float(remaning_budget) - float(driver_cost)
+            self.text_budget.setText(str(new_budget))
+            # print(selected_driver)ù
+            if new_budget < 0.:
+                self.budget_check = False
+            if int(self.list_selected_driver.count()) + int(self.list_selected_team.count()) == 6:
+                self.budget_check = True
+            self.b2.setEnabled(self.budget_check)
+
+
 
     def get_team(self):
         active_team = int(self.list_selected_team.count())
@@ -594,10 +633,20 @@ class MyWindow(QMainWindow):
             selected_team =  self.list_team.currentItem().text()
             self.list_selected_team.addItem(selected_team)
             # print(selected_driver)
+        if int(self.list_selected_driver.count()) + int(self.list_selected_team.count()) == 6 and self.budget_check:
+            self.b2.setEnabled(True)
 
     def remove_driver(self):
         selected_driver = self.list_selected_driver.currentItem()
+        selected_driver_text = self.list_selected_driver.currentItem().text()
         self.list_selected_driver.takeItem(self.list_selected_driver.row(selected_driver))
+        selected_driver_obj = d_name_to_object(selected_driver_text)
+        driver_cost = selected_driver_obj.price
+        remaning_budget = self.text_budget.toPlainText()
+        new_budget = float(remaning_budget) + float(driver_cost)
+        self.text_budget.setText(str(new_budget))
+        if new_budget >= 0.:
+            self.budget_check = True
 
     def remove_team(self):
         selected_team = self.list_selected_team.currentItem()
@@ -708,6 +757,7 @@ class MyWindow(QMainWindow):
         box_year = QVBoxLayout()
         box_year.addWidget(self.year18)
         box_year.addWidget(self.year19)
+        box_year.addStretch(1)
 
         self.label_points = []
         self.points = []
@@ -715,6 +765,21 @@ class MyWindow(QMainWindow):
         standard_label_driver = ['Driver 1','Driver 2','Driver 3','Driver 4','Driver 5','team' ]
         box_scores = QVBoxLayout()
 
+        self.label_budget = QtWidgets.QLabel(self)
+        self.label_budget.setText('Budget')
+
+        self.text_budget = QTextEdit(self)
+        self.text_budget.setReadOnly(True)
+        self.text_budget.setText('100')
+        self.text_budget.setFixedHeight(30)
+        self.text_budget.setAlignment(Qt.AlignRight)
+
+        self.box_budget = QHBoxLayout()
+        self.box_budget.addWidget(self.label_budget)
+        self.box_budget.addStretch(1)
+        self.box_budget.addWidget(self.text_budget)
+
+        box_scores.addLayout(self.box_budget)
         for i in range(0,6):
             self.label_points.append(QtWidgets.QLabel(self))
             self.label_points[i].setText(standard_label_driver[i])
