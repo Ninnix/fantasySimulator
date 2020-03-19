@@ -571,6 +571,13 @@ class MyWindow(QMainWindow):
         plot(self.lst_my_drivers,self.my_team)
         self.text_total_score.setAlignment(Qt.AlignRight)
 
+        for i in range(0,5):
+            self.points[i].setText(str(sum(self.lst_my_drivers[i].score_for_races)))
+            self.points[i].setAlignment(Qt.AlignRight)
+        self.points[5].setText(str(sum(self.my_team.score_for_races)))
+        self.points[5].setAlignment(Qt.AlignRight)
+
+
     def get_driver(self):
         active_drivers = int(self.list_selected_driver.count())
         # print(active_drivers)
@@ -701,12 +708,27 @@ class MyWindow(QMainWindow):
         box_year.addWidget(self.year18)
         box_year.addWidget(self.year19)
 
+        label_points = []
+        self.points = []
+        box_points = []
+
+        box_scores = QVBoxLayout()
+        for i in range(0,6):
+            label_points.append(QtWidgets.QLabel(self))
+            self.points.append(QTextEdit(self))
+            self.points[i].setReadOnly(True)
+            self.points[i].setFixedHeight(30)
+            box_points.append(QHBoxLayout())
+            box_points[i].addWidget(label_points[i])
+            box_points[i].addStretch(1)
+            box_points[i].addWidget(self.points[i])
+            box_scores.addLayout(box_points[i])
+
         box_total_score = QHBoxLayout()
         box_total_score.addWidget(self.total_point_label)
         box_total_score.addStretch(1)
         box_total_score.addWidget(self.text_total_score)
 
-        box_scores = QVBoxLayout()
         box_scores.addLayout(box_total_score)
         box_scores.addStretch(1)
 
