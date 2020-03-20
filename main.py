@@ -608,7 +608,7 @@ class MyWindow(QMainWindow):
             selected_driver_obj = d_name_to_object(selected_driver)
             driver_cost = selected_driver_obj.price
             remaning_budget = self.text_budget.toPlainText()
-            self.new_budget = float(remaning_budget) - float(driver_cost)
+            self.new_budget = round(float(remaning_budget) - float(driver_cost),2)
             self.text_budget.setText(str(self.new_budget))
             self.text_budget.setAlignment(Qt.AlignRight)
             if int(self.list_selected_driver.count()) + int(self.list_selected_team.count()) == 6 and self.simulation_check and self.new_budget >= 0:
@@ -625,7 +625,7 @@ class MyWindow(QMainWindow):
             selected_team_obj = t_name_to_obj(selected_team)
             team_cost = selected_team_obj.price
             remaning_budget = self.text_budget.toPlainText()
-            self.new_budget = float(remaning_budget) - float(team_cost)
+            self.new_budget = round(float(remaning_budget) - float(team_cost),2)
             self.text_budget.setText(str(self.new_budget))
             self.text_budget.setAlignment(Qt.AlignRight)
         if int(self.list_selected_driver.count()) + int(
@@ -641,7 +641,7 @@ class MyWindow(QMainWindow):
         selected_driver_obj = d_name_to_object(selected_driver_text)
         driver_cost = selected_driver_obj.price
         remaning_budget = self.text_budget.toPlainText()
-        self.new_budget = float(remaning_budget) + float(driver_cost)
+        self.new_budget = round(float(remaning_budget) + float(driver_cost),2)
         self.text_budget.setText(str(self.new_budget))
         self.text_budget.setAlignment(Qt.AlignRight)
         self.b2.setEnabled(False)
@@ -653,7 +653,7 @@ class MyWindow(QMainWindow):
         selected_team_obj = t_name_to_obj(selected_team.text())
         team_cost = selected_team_obj.price
         remaning_budget = self.text_budget.toPlainText()
-        self.new_budget = float(remaning_budget) + float(team_cost)
+        self.new_budget = round(float(remaning_budget) + float(team_cost),2)
         self.text_budget.setText(str(self.new_budget))
         self.text_budget.setAlignment(Qt.AlignRight)
         self.b2.setEnabled(False)
