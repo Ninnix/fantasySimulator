@@ -622,7 +622,12 @@ class MyWindow(QMainWindow):
         if active_team + 1 < 2: # 1 represent the driver the "if" will add if true
             selected_team =  self.list_team.currentItem().text()
             self.list_selected_team.addItem(selected_team)
-            # print(selected_driver)
+            selected_team_obj = t_name_to_obj(selected_team)
+            team_cost = selected_team_obj.price
+            remaning_budget = self.text_budget.toPlainText()
+            self.new_budget = float(remaning_budget) - float(team_cost)
+            self.text_budget.setText(str(self.new_budget))
+            self.text_budget.setAlignment(Qt.AlignRight)
         if int(self.list_selected_driver.count()) + int(
                 self.list_selected_team.count()) == 6 and self.simulation_check and self.new_budget >= 0:
             self.b2.setEnabled(True)
@@ -636,8 +641,8 @@ class MyWindow(QMainWindow):
         selected_driver_obj = d_name_to_object(selected_driver_text)
         driver_cost = selected_driver_obj.price
         remaning_budget = self.text_budget.toPlainText()
-        new_budget = float(remaning_budget) + float(driver_cost)
-        self.text_budget.setText(str(new_budget))
+        self.new_budget = float(remaning_budget) + float(driver_cost)
+        self.text_budget.setText(str(self.new_budget))
         self.text_budget.setAlignment(Qt.AlignRight)
         self.b2.setEnabled(False)
 
@@ -645,6 +650,12 @@ class MyWindow(QMainWindow):
     def remove_team(self):
         selected_team = self.list_selected_team.currentItem()
         self.list_selected_team.takeItem(self.list_selected_team.row(selected_team))
+        selected_team_obj = t_name_to_obj(selected_team.text())
+        team_cost = selected_team_obj.price
+        remaning_budget = self.text_budget.toPlainText()
+        self.new_budget = float(remaning_budget) + float(team_cost)
+        self.text_budget.setText(str(self.new_budget))
+        self.text_budget.setAlignment(Qt.AlignRight)
         self.b2.setEnabled(False)
 
     def year_switch(self):
@@ -754,7 +765,7 @@ class MyWindow(QMainWindow):
         self.dock4.setWidget(self.list_selected_team)
         self.dock2.setFloating(False)
 
-        box_year = QVBoxLayout()
+        box_year = QHBoxLayout()
         box_year.addWidget(self.year18)
         box_year.addWidget(self.year19)
         box_year.addStretch(1)
@@ -798,6 +809,7 @@ class MyWindow(QMainWindow):
         box_scores.addStretch(1)
 
         hbox = QHBoxLayout()
+        hbox.addLayout(box_year)
         hbox.addStretch(1)
         hbox.addWidget(self.b1)
         hbox.addWidget(self.b2)
