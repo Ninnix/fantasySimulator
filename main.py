@@ -418,29 +418,17 @@ def final_score(my_drivers,my_team):
         return 'Final score for invalid team is 0'
 
 # it moves your team in a list called lst_my_drivers
-def name_to_object(lst_my_drivers_fullname,my_team_fullname):
+def name_to_object(lst_my_drivers_fullname):
     lst_my_drivers_name = []
     for fullname in lst_my_drivers_fullname:
         splitted = fullname.split()
         lst_my_drivers_name.append(splitted[0])
-    my_team_name = []
-    splitted = my_team_fullname.split()
-    splitted.pop()
-    my_team_name = splitted
-    if len(my_team_name) == 2:
-         my_team_name = my_team_name[0] + ' ' + my_team_name[1]
-    else:
-        my_team_name = str(my_team_name[0])
     lst_my_drivers = []
     for d in lst_drivers:
         for name in lst_my_drivers_name:
             if d.id == dic_drivers.get(name):
                 lst_my_drivers.append(d)
-    for t in lst_teams:
-        if t.id == dic_teams.get(my_team_name):
-            my_team = t
-    my_team_obj = [lst_my_drivers,my_team]
-    return my_team_obj
+    return lst_my_drivers
 
 def d_name_to_object(driver_name):
     splitted = driver_name.split()
@@ -581,9 +569,9 @@ class MyWindow(QMainWindow):
             lst_my_drivers.append(self.list_selected_driver.item(i).text())
         my_team = self.list_selected_team.item(0).text()
 
-        my_team_obj = name_to_object(lst_my_drivers,my_team)
-        self.lst_my_drivers = my_team_obj[0]
-        self.my_team = my_team_obj[1]
+
+        self.lst_my_drivers = name_to_object(lst_my_drivers)
+        self.my_team = t_name_to_obj(my_team)
 
 
         self.total_points = final_score(self.lst_my_drivers,self.my_team)
@@ -604,13 +592,26 @@ class MyWindow(QMainWindow):
         # print(active_drivers)
         if active_drivers + 1 < 6: # 1 represent the driver the "if" will add if true
             selected_driver =  self.list_driver.currentItem().text()
-            self.list_selected_driver.addItem(selected_driver)
+
             selected_driver_obj = d_name_to_object(selected_driver)
+
+            lst_my_drivers = []
+            range_d = range(0, int(self.list_selected_driver.count()))
+            for i in range_d:
+                lst_my_drivers.append(self.list_selected_driver.item(i).text())
+
+            self.lst_my_drivers = name_to_object(lst_my_drivers)
+
+            for d in self.lst_my_drivers:
+                if d.id == selected_driver_obj.id:
+                    return
+
             driver_cost = selected_driver_obj.price
             remaning_budget = self.text_budget.toPlainText()
             self.new_budget = round(float(remaning_budget) - float(driver_cost),2)
             self.text_budget.setText(str(self.new_budget))
             self.text_budget.setAlignment(Qt.AlignRight)
+            self.list_selected_driver.addItem(selected_driver)
             if int(self.list_selected_driver.count()) + int(self.list_selected_team.count()) == 6 and self.simulation_check and self.new_budget >= 0:
                 self.b2.setEnabled(True)
             else:
