@@ -746,7 +746,7 @@ class MyWindow(QMainWindow):
         self.year19.toggled.connect(self.year_switch)
         self.year18 = QRadioButton('2018')
         self.year18.toggled.connect(self.year_switch)
-        self.year18.toggle()
+        self.year19.toggle()
 
         self.dock1 = QDockWidget('Select Drivers',self)
         self.addDockWidget(Qt.LeftDockWidgetArea,self.dock1)
@@ -819,7 +819,7 @@ class MyWindow(QMainWindow):
 
         H_big_box = QHBoxLayout()
         # vbox.addStretch(1)
-        H_big_box.addLayout(box_year)
+        # H_big_box.addLayout(box_year)
         # H_big_box.addStretch(1)
         H_big_box.addLayout(box_scores)
 
