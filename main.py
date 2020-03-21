@@ -830,10 +830,6 @@ class MyWindow(QMainWindow):
         self.dockedWidget = QWidget(self)
         self.centraldock.setWidget(self.dockedWidget)
         self.dockedWidget.setLayout(V_big_box)
-        # self.dockedWidget.layout().addWidget(self.b1)
-        # self.dockedWidget.layout().addWidget(self.b2)
-        # self.dockedWidget.layout().addWidget(self.year18)
-        # self.dockedWidget.layout().addWidget(self.year19)
 
         self.setGeometry(200, 200, 1000, 1000)
         self.setWindowTitle("Fantasy Simulator")
